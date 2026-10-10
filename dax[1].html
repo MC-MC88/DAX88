@@ -1,0 +1,2570 @@
+<!doctype html>
+<html lang="en" data-theme="chalk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f8fa" id="themeColor">
+<meta name="description" content="DAX88 — A complete DAX function library for Power BI. By MC88.">
+<meta name="color-scheme" content="light dark">
+<title>DAX88 — Power BI Function Library</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230a0a0f'/><text x='50' y='68' font-family='Georgia,serif' font-size='42' font-weight='700' text-anchor='middle' fill='%232563eb'>D</text><text x='74' y='78' font-family='monospace' font-size='22' font-weight='700' text-anchor='middle' fill='%23f7f8fa'>88</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   1. Reset
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  font-family:'Inter Tight',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--ink);
+  line-height:1.6;font-size:15px;min-height:100vh;
+  overflow-x:hidden;
+  transition:background-color .3s ease,color .3s ease;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input{font:inherit;color:inherit}
+svg{display:block;max-width:100%}
+h1,h2,h3,h4{font-weight:600;letter-spacing:-.02em;line-height:1.2;text-wrap:balance}
+::selection{background:var(--accent);color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+/* ============================================================
+   2. Design tokens + themes
+   ============================================================ */
+:root{
+  --font-ui:'Inter Tight',system-ui,sans-serif;
+  --font-display:'Instrument Serif',Georgia,serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --radius-sm:6px;
+  --radius:10px;
+  --radius-lg:14px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 4px 12px -2px rgba(0,0,0,.06),0 2px 4px -2px rgba(0,0,0,.04);
+  --shadow-lg:0 24px 48px -12px rgba(0,0,0,.18);
+  --transition:.18s cubic-bezier(.4,0,.2,1);
+}
+
+/* ---- 2.1 CHALK (light, cool) ---- */
+[data-theme=chalk]{
+  --bg:#f7f8fa;--bg-2:#eef0f4;--surface:#ffffff;--surface-2:#f4f5f8;
+  --ink:#0a0a0f;--ink-2:#3f4451;--ink-3:#767c8c;
+  --line:rgba(10,10,15,.09);--line-2:rgba(10,10,15,.045);
+  --accent:#2563eb;--accent-ink:#ffffff;--accent-bg:rgba(37,99,235,.08);
+  --accent-deep:#1d4ed8;
+  --measure:#0d7a6a;--measure-bg:rgba(13,122,106,.10);
+  --column:#8b2e5e;--column-bg:rgba(139,46,94,.10);
+  --both:#7c3aed;--both-bg:rgba(124,58,237,.10);
+  --gold:#f59e0b;
+  --code-bg:#0f1117;--code-ink:#e6e8ec;--code-kw:#fbbf24;--code-str:#86efac;--code-num:#f9a8d4;
+  color-scheme:light;
+}
+/* ---- 2.2 GRAPHITE (dark, warm) ---- */
+[data-theme=graphite]{
+  --bg:#0c0c10;--bg-2:#13131a;--surface:#161620;--surface-2:#1c1c28;
+  --ink:#ecedf2;--ink-2:#b0b3c0;--ink-3:#71768a;
+  --line:rgba(236,237,242,.10);--line-2:rgba(236,237,242,.05);
+  --accent:#f59e0b;--accent-ink:#0c0c10;--accent-bg:rgba(245,158,11,.14);
+  --accent-deep:#fbbf24;
+  --measure:#5eead4;--measure-bg:rgba(94,234,212,.12);
+  --column:#e9a8d4;--column-bg:rgba(233,168,212,.12);
+  --both:#a78bfa;--both-bg:rgba(167,139,250,.12);
+  --gold:#fbbf24;
+  --code-bg:#08080c;--code-ink:#e6e8ec;--code-kw:#fbbf24;--code-str:#86efac;--code-num:#f9a8d4;
+  color-scheme:dark;
+}
+/* ---- 2.3 SAGE (light, green) ---- */
+[data-theme=sage]{
+  --bg:#f4f8f4;--bg-2:#eaf2ea;--surface:#ffffff;--surface-2:#f0f5ef;
+  --ink:#0f1e12;--ink-2:#3a4a3e;--ink-3:#6b7c6e;
+  --line:rgba(15,30,18,.09);--line-2:rgba(15,30,18,.045);
+  --accent:#0d7a4a;--accent-ink:#ffffff;--accent-bg:rgba(13,122,74,.09);
+  --accent-deep:#0a5d39;
+  --measure:#0f766e;--measure-bg:rgba(15,118,110,.10);
+  --column:#9d174d;--column-bg:rgba(157,23,77,.10);
+  --both:#1e40af;--both-bg:rgba(30,64,175,.10);
+  --gold:#ca8a04;
+  --code-bg:#0f1a12;--code-ink:#e6ece7;--code-kw:#fde047;--code-str:#86efac;--code-num:#f9a8d4;
+  color-scheme:light;
+}
+/* ---- 2.4 SLATE (dark, cool) ---- */
+[data-theme=slate]{
+  --bg:#0d1117;--bg-2:#121821;--surface:#161c26;--surface-2:#1c242f;
+  --ink:#e6e8eb;--ink-2:#9ba4b0;--ink-3:#666f7c;
+  --line:rgba(230,232,235,.10);--line-2:rgba(230,232,235,.05);
+  --accent:#22d3ee;--accent-ink:#0d1117;--accent-bg:rgba(34,211,238,.13);
+  --accent-deep:#67e8f9;
+  --measure:#34d399;--measure-bg:rgba(52,211,153,.12);
+  --column:#f0abfc;--column-bg:rgba(240,171,252,.12);
+  --both:#818cf8;--both-bg:rgba(129,140,248,.12);
+  --gold:#facc15;
+  --code-bg:#080b10;--code-ink:#e6e8eb;--code-kw:#22d3ee;--code-str:#86efac;--code-num:#f0abfc;
+  color-scheme:dark;
+}
+/* ---- 2.5 ROSE (light, warm) ---- */
+[data-theme=rose]{
+  --bg:#fdf7f6;--bg-2:#f8ebe8;--surface:#ffffff;--surface-2:#faf0ee;
+  --ink:#26161a;--ink-2:#564247;--ink-3:#8b757a;
+  --line:rgba(38,22,26,.09);--line-2:rgba(38,22,26,.045);
+  --accent:#be123c;--accent-ink:#ffffff;--accent-bg:rgba(190,18,60,.08);
+  --accent-deep:#9f1239;
+  --measure:#0d7a6a;--measure-bg:rgba(13,122,106,.10);
+  --column:#7c3aed;--column-bg:rgba(124,58,237,.10);
+  --both:#0369a1;--both-bg:rgba(3,105,161,.10);
+  --gold:#a16207;
+  --code-bg:#1a1015;--code-ink:#f0e0e4;--code-kw:#fb7185;--code-str:#86efac;--code-num:#f9a8d4;
+  color-scheme:light;
+}
+/* ---- 2.6 PLUM (dark, violet) ---- */
+[data-theme=plum]{
+  --bg:#120a18;--bg-2:#1a1022;--surface:#1f1428;--surface-2:#281a34;
+  --ink:#efe6f4;--ink-2:#b8a8c4;--ink-3:#7d6d8a;
+  --line:rgba(239,230,244,.10);--line-2:rgba(239,230,244,.05);
+  --accent:#c084fc;--accent-ink:#120a18;--accent-bg:rgba(192,132,252,.14);
+  --accent-deep:#d8b4fe;
+  --measure:#5eead4;--measure-bg:rgba(94,234,212,.12);
+  --column:#f9a8d4;--column-bg:rgba(249,168,212,.12);
+  --both:#93c5fd;--both-bg:rgba(147,197,253,.12);
+  --gold:#fcd34d;
+  --code-bg:#0a0510;--code-ink:#efe6f4;--code-kw:#c084fc;--code-str:#86efac;--code-num:#f9a8d4;
+  color-scheme:dark;
+}
+
+/* ============================================================
+   3. Noscript
+   ============================================================ */
+.noscript-page{
+  max-width:520px;margin:120px auto;padding:32px;text-align:center;
+}
+.noscript-page h1{
+  font-family:var(--font-display);font-size:2.4rem;margin-bottom:16px;
+}
+.noscript-page h1 em{color:var(--accent);font-style:italic}
+.noscript-page p{color:var(--ink-2);line-height:1.7}
+html.js-on .noscript-page{display:none}
+
+/* ============================================================
+   4. App bar (header + tabs)
+   ============================================================ */
+.app-bar{
+  position:sticky;top:0;z-index:100;
+  background:var(--bg);
+  background:color-mix(in srgb,var(--bg) 92%,transparent);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+  padding-top:env(safe-area-inset-top);
+}
+.app-bar-inner{
+  max-width:1240px;margin-inline:auto;
+  padding:14px 28px;
+  display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;gap:20px;
+}
+.brand{
+  display:flex;align-items:center;gap:9px;
+  font-family:var(--font-display);font-size:1.6rem;
+  line-height:1;color:var(--ink);
+  padding:6px 0;min-height:44px;
+}
+.brand-mark{
+  display:inline-grid;place-items:center;
+  width:32px;height:32px;
+  background:var(--accent);color:var(--accent-ink);
+  border-radius:8px;
+  font-family:var(--font-display);font-size:1.2rem;
+  font-style:italic;
+}
+.brand-text{font-family:var(--font-display)}
+.brand-88{
+  font-family:var(--font-mono);font-size:.7rem;
+  font-weight:700;color:var(--ink-3);
+  letter-spacing:.05em;margin-left:1px;
+  align-self:flex-end;padding-bottom:3px;
+}
+
+/* --- search --- */
+.search-wrap{position:relative;width:100%;max-width:520px;justify-self:center}
+.search-wrap svg{
+  position:absolute;top:50%;left:14px;transform:translateY(-50%);
+  width:16px;height:16px;fill:none;stroke:var(--ink-3);stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;pointer-events:none;
+  transition:stroke var(--transition);
+}
+#search{
+  width:100%;height:40px;
+  padding:0 42px 0 40px;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:var(--surface);
+  font-size:.9rem;outline:none;
+  transition:border-color var(--transition),box-shadow var(--transition);
+}
+#search::placeholder{color:var(--ink-3)}
+#search:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-bg);
+}
+.search-wrap:focus-within svg{stroke:var(--accent-deep)}
+.search-key{
+  position:absolute;top:50%;right:12px;transform:translateY(-50%);
+  font-family:var(--font-mono);font-size:.65rem;
+  color:var(--ink-3);padding:2px 6px;
+  border:1px solid var(--line);border-radius:4px;
+  pointer-events:none;transition:opacity var(--transition);
+}
+#search:not(:placeholder-shown) ~ .search-key,
+#search:focus ~ .search-key{opacity:0}
+
+/* --- tools --- */
+.tools{display:flex;align-items:center;gap:4px}
+.tool-btn{
+  width:40px;height:40px;border-radius:var(--radius);
+  display:grid;place-items:center;
+  color:var(--ink-2);
+  transition:background-color var(--transition),color var(--transition);
+}
+.tool-btn:hover{background:var(--surface-2);color:var(--ink)}
+.tool-btn svg{
+  width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+
+/* --- theme menu --- */
+.theme-wrap{position:relative}
+.theme-menu{
+  position:absolute;top:calc(100% + 8px);right:0;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-lg);
+  padding:6px;
+  min-width:180px;
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity .18s,visibility .18s,transform .18s;
+  z-index:200;
+}
+.theme-menu.open{opacity:1;visibility:visible;transform:translateY(0)}
+.theme-opt{
+  display:flex;align-items:center;gap:10px;
+  width:100%;padding:9px 11px;border-radius:var(--radius-sm);
+  font-size:.86rem;font-weight:500;color:var(--ink-2);
+  text-align:left;transition:background-color var(--transition),color var(--transition);
+  min-height:40px;
+}
+.theme-opt:hover{background:var(--surface-2);color:var(--ink)}
+.theme-opt.active{background:var(--accent-bg);color:var(--accent-deep)}
+.theme-dot{
+  width:16px;height:16px;border-radius:50%;
+  border:1.5px solid var(--line);flex-shrink:0;
+}
+.theme-opt .theme-name{flex:1;font-family:var(--font-mono);font-size:.78rem;letter-spacing:.02em;text-transform:uppercase}
+.theme-opt .theme-check{color:var(--accent);font-size:.9rem;opacity:0}
+.theme-opt.active .theme-check{opacity:1}
+
+/* --- tabs bar --- */
+.tabs-bar{border-top:1px solid var(--line-2)}
+.tabs{
+  max-width:1240px;margin-inline:auto;
+  padding:0 28px;
+  display:flex;gap:0;overflow-x:auto;scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  position:relative;
+  padding:12px 14px 11px;
+  font-family:var(--font-mono);font-size:.74rem;
+  font-weight:500;letter-spacing:.02em;
+  color:var(--ink-3);white-space:nowrap;
+  transition:color var(--transition);
+  text-transform:uppercase;
+}
+.tab:hover{color:var(--ink-2)}
+.tab.active{color:var(--ink)}
+.tab.active::after{
+  content:'';position:absolute;left:14px;right:14px;bottom:-1px;
+  height:2px;background:var(--accent);border-radius:2px 2px 0 0;
+}
+.tab-count{
+  font-family:var(--font-mono);font-size:.68rem;
+  opacity:.55;margin-left:6px;font-weight:400;
+}
+
+/* ============================================================
+   5. Main layout
+   ============================================================ */
+.main{max-width:1240px;margin-inline:auto;padding:32px 28px 80px}
+
+/* ============================================================
+   6. List view
+   ============================================================ */
+.view-list.hidden{display:none}
+.list-meta{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:12px;margin-bottom:24px;
+}
+.list-count{
+  font-family:var(--font-mono);font-size:.72rem;
+  letter-spacing:.05em;color:var(--ink-3);
+}
+.list-count b{color:var(--ink);font-weight:700}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));
+  gap:12px;
+}
+
+.card{
+  position:relative;
+  display:flex;flex-direction:column;gap:10px;
+  padding:20px 22px 22px;
+  text-align:left;width:100%;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:border-color var(--transition),transform var(--transition),box-shadow var(--transition);
+}
+.card:hover{
+  border-color:var(--accent);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow);
+}
+.card:active{transform:translateY(0)}
+.card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.card::after{
+  content:'';position:absolute;left:50%;bottom:16px;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  opacity:0;transform:translate(-50%,4px);
+  transition:opacity var(--transition),transform var(--transition);
+}
+.card:hover::after{opacity:.7;transform:translate(-50%,0)}
+
+.card-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-name{
+  font-family:var(--font-mono);font-size:1rem;font-weight:700;
+  letter-spacing:-.01em;color:var(--ink);line-height:1.3;
+  flex:1;min-width:0;word-break:break-word;
+}
+.ctx-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 8px;border-radius:5px;
+  font-family:var(--font-mono);font-size:.6rem;
+  font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;line-height:1;
+  flex-shrink:0;
+}
+.ctx-badge svg{width:9px;height:9px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ctx-measure{color:var(--measure);background:var(--measure-bg)}
+.ctx-column{color:var(--column);background:var(--column-bg)}
+.ctx-both{color:var(--both);background:var(--both-bg)}
+
+.card-meta{display:flex;align-items:center;gap:8px}
+.card-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.card-cat{
+  font-family:var(--font-mono);font-size:.65rem;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;
+}
+.card-desc{
+  font-size:.88rem;color:var(--ink-2);line-height:1.55;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.empty-state{
+  display:none;text-align:center;
+  padding:100px 20px;color:var(--ink-3);
+}
+.empty-state.show{display:block}
+.empty-state h3{
+  font-family:var(--font-display);font-size:1.6rem;
+  color:var(--ink);margin-bottom:8px;font-weight:400;
+}
+.empty-state h3 em{font-style:italic;color:var(--accent)}
+
+/* ============================================================
+   7. Detail view
+   ============================================================ */
+.view-detail{display:none}
+.view-detail.active{display:block;animation:slideUp .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes slideUp{
+  from{opacity:0;transform:translate3d(0,12px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+
+.detail-toolbar{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:32px;flex-wrap:wrap;
+}
+.back-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:0 16px;height:40px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  font-size:.86rem;font-weight:500;
+  color:var(--ink-2);
+  transition:all var(--transition);
+}
+.back-btn:hover{border-color:var(--ink-3);color:var(--ink);transform:translateX(-2px)}
+.back-btn:active{transform:translateX(0)}
+.back-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.detail-hero{
+  display:grid;grid-template-columns:1fr auto;gap:24px;
+  align-items:start;
+  padding-bottom:32px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:32px;
+}
+.detail-badges{
+  display:flex;align-items:center;gap:12px;
+  flex-wrap:wrap;margin-bottom:16px;
+}
+.detail-cat{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:.68rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-3);
+}
+.detail-cat .dot{width:8px;height:8px;border-radius:50%}
+
+.detail-name{
+  font-family:var(--font-display);
+  font-size:clamp(2.2rem,6vw,3.4rem);
+  font-weight:400;
+  letter-spacing:-.02em;
+  line-height:1.05;
+  color:var(--ink);
+  word-break:break-word;
+  margin-bottom:12px;
+}
+.detail-tagline{
+  font-family:var(--font-display);font-style:italic;
+  font-size:1.15rem;color:var(--ink-2);
+  margin-bottom:20px;font-weight:400;
+}
+.detail-desc{
+  font-size:1rem;color:var(--ink-2);
+  line-height:1.7;max-width:720px;
+}
+
+/* Context note */
+.ctx-note{
+  display:none;align-items:flex-start;gap:12px;
+  padding:14px 18px;
+  background:var(--accent-bg);
+  border-left:3px solid var(--accent);
+  border-radius:var(--radius-sm);
+  margin-top:22px;
+  font-size:.88rem;color:var(--ink-2);
+  line-height:1.65;max-width:720px;
+}
+.ctx-note.show{display:flex}
+.ctx-note svg{
+  width:16px;height:16px;flex-shrink:0;margin-top:3px;
+  fill:none;stroke:var(--accent-deep);stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.ctx-note b{color:var(--ink);font-weight:600}
+
+/* Section */
+.section{margin-bottom:36px}
+.section:last-child{margin-bottom:0}
+.section-head{
+  display:flex;align-items:center;gap:12px;
+  font-family:var(--font-mono);font-size:.7rem;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:600;
+  margin-bottom:16px;
+}
+.section-head::after{
+  content:'';flex:1;height:1px;background:var(--line);
+}
+
+/* Fields */
+.fields{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:12px;
+}
+.field{display:flex;flex-direction:column;gap:6px}
+.field-label{
+  font-size:.78rem;font-weight:600;color:var(--ink-2);
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:8px;
+}
+.field-var{
+  font-family:var(--font-mono);font-size:.68rem;
+  color:var(--accent-deep);font-weight:500;
+}
+.field input{
+  height:44px;
+  padding:0 14px;
+  border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  background:var(--surface);
+  font-family:var(--font-mono);font-size:.86rem;
+  outline:none;width:100%;
+  transition:border-color var(--transition),box-shadow var(--transition);
+}
+.field input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-bg);
+}
+
+/* Code preview */
+.code-wrap{
+  position:relative;
+  background:var(--code-bg);
+  border-radius:var(--radius);
+  padding:24px 68px 24px 24px;
+  overflow-x:auto;
+  min-height:72px;
+  display:flex;align-items:center;
+}
+.code-wrap pre{margin:0;width:100%}
+.code-wrap code{
+  font-family:var(--font-mono);font-size:.92rem;
+  line-height:1.75;color:var(--code-ink);
+  white-space:pre-wrap;word-break:break-word;
+}
+.code-wrap .kw{color:var(--code-kw);font-weight:700}
+.code-wrap .str{color:var(--code-str)}
+.code-wrap .num{color:var(--code-num)}
+.copy-btn{
+  position:absolute;top:50%;right:14px;
+  transform:translateY(-50%);
+  width:44px;height:44px;
+  border-radius:var(--radius-sm);
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+  color:var(--code-ink);
+  display:grid;place-items:center;
+  transition:background-color var(--transition),color var(--transition),transform .15s;
+}
+.copy-btn:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.copy-btn:active{transform:translateY(-50%) scale(.94)}
+.copy-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.code-note{
+  font-family:var(--font-mono);font-size:.7rem;
+  color:var(--ink-3);margin-top:10px;
+}
+
+/* Info accordion */
+.info-block{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  margin-bottom:10px;overflow:hidden;
+}
+.info-block summary{
+  list-style:none;cursor:pointer;
+  padding:14px 20px;min-height:52px;
+  display:flex;align-items:center;gap:12px;
+  font-family:var(--font-mono);font-size:.72rem;
+  font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-2);
+  transition:background-color var(--transition),color var(--transition);
+}
+.info-block summary::-webkit-details-marker{display:none}
+.info-block summary:hover{background:var(--surface-2);color:var(--ink)}
+.info-block summary svg{
+  width:12px;height:12px;flex-shrink:0;
+  fill:none;stroke:currentColor;stroke-width:2.5;
+  stroke-linecap:round;stroke-linejoin:round;
+  transition:transform var(--transition);
+}
+.info-block[open] summary{border-bottom:1px solid var(--line-2)}
+.info-block[open] summary svg{transform:rotate(90deg)}
+.info-content{
+  padding:18px 22px;
+  font-size:.92rem;color:var(--ink-2);line-height:1.7;
+}
+.info-content ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.info-content li{position:relative;padding-left:22px;line-height:1.6}
+.info-content li::before{
+  content:'';position:absolute;left:0;top:9px;
+  width:7px;height:7px;border-radius:2px;
+  background:var(--accent);transform:rotate(45deg);
+}
+
+/* Related */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  padding:0 14px;height:40px;
+  display:inline-flex;align-items:center;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  font-family:var(--font-mono);font-size:.78rem;
+  font-weight:500;color:var(--ink-2);
+  transition:all var(--transition);
+}
+.chip:hover{
+  border-color:var(--accent);background:var(--accent-bg);
+  color:var(--accent-deep);transform:translateY(-1px);
+}
+
+/* ============================================================
+   8. Guide panel
+   ============================================================ */
+.guide-backdrop{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(10,10,15,.55);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .3s,visibility .3s;
+}
+.guide-backdrop.open{opacity:1;visibility:visible;pointer-events:auto}
+
+.guide-panel{
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-46%) scale(.96);
+  width:calc(100vw - 40px);
+  max-width:740px;
+  max-height:88vh;
+  z-index:1001;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);
+  display:flex;flex-direction:column;overflow:hidden;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .3s,visibility .3s,transform .35s cubic-bezier(.2,.8,.2,1);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  padding-top:env(safe-area-inset-top);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.guide-panel.open{
+  opacity:1;visibility:visible;pointer-events:auto;
+  transform:translate(-50%,-50%) scale(1);
+}
+.guide-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:16px;padding:24px 28px 20px;
+  border-bottom:1px solid var(--line);flex-shrink:0;
+}
+.guide-header h2{
+  font-family:var(--font-display);font-size:1.6rem;
+  font-weight:400;color:var(--ink);margin-bottom:4px;
+}
+.guide-header h2 em{font-style:italic;color:var(--accent-deep)}
+.guide-header p{font-size:.84rem;color:var(--ink-3)}
+.guide-close{
+  width:40px;height:40px;border-radius:var(--radius);
+  display:grid;place-items:center;color:var(--ink-2);
+  transition:background-color var(--transition),color var(--transition);
+  flex-shrink:0;
+}
+.guide-close:hover{background:var(--surface-2);color:var(--ink)}
+.guide-close svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+
+.guide-body{
+  flex:1;overflow-y:auto;
+  padding:26px 28px 30px;
+  overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+}
+.guide-body::-webkit-scrollbar{width:6px}
+.guide-body::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+.guide-lead{
+  font-size:.96rem;color:var(--ink-2);
+  line-height:1.7;margin-bottom:26px;
+}
+.guide-lead em{font-family:var(--font-display);font-style:italic;color:var(--accent-deep)}
+.guide-block{margin-bottom:28px}
+.guide-block:last-child{margin-bottom:0}
+.guide-block h4{
+  font-family:var(--font-mono);font-size:.68rem;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:600;
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;
+}
+.guide-block h4::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:8px}
+.steps li{
+  counter-increment:s;position:relative;
+  padding:12px 16px 12px 48px;
+  background:var(--bg);border:1px solid var(--line-2);
+  border-radius:var(--radius-sm);
+  font-size:.88rem;color:var(--ink-2);line-height:1.55;
+}
+.steps li::before{
+  content:counter(s);position:absolute;
+  left:12px;top:50%;transform:translateY(-50%);
+  width:24px;height:24px;border-radius:6px;
+  background:var(--accent);color:var(--accent-ink);
+  display:grid;place-items:center;
+  font-family:var(--font-mono);font-size:.72rem;font-weight:700;
+}
+.steps li b{color:var(--ink);font-weight:600}
+
+.guide-rows{display:flex;flex-direction:column;gap:6px}
+.guide-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px;padding:12px 16px;
+  background:var(--bg);border:1px solid var(--line-2);
+  border-radius:var(--radius-sm);
+  font-size:.86rem;color:var(--ink-2);
+  min-height:44px;
+}
+.guide-row span:last-child{color:var(--ink-3);text-align:right}
+.kbd{
+  font-family:var(--font-mono);font-size:.72rem;
+  font-weight:600;padding:4px 10px;
+  border:1px solid var(--line);border-bottom-width:2px;
+  border-radius:5px;background:var(--surface);
+  color:var(--ink);white-space:nowrap;
+}
+.model-table{
+  padding:12px 16px;background:var(--bg);
+  border:1px solid var(--line-2);
+  border-radius:var(--radius-sm);
+  font-family:var(--font-mono);font-size:.76rem;
+  color:var(--ink-2);margin-bottom:6px;line-height:1.6;
+}
+.model-table:last-child{margin-bottom:0}
+.model-table b{color:var(--accent-deep);font-weight:600}
+.model-table span{color:var(--ink-3)}
+
+.cat-guide{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;
+}
+.cat-guide-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:12px 14px;background:var(--bg);
+  border:1px solid var(--line-2);
+  border-radius:var(--radius-sm);
+  font-size:.82rem;color:var(--ink-2);line-height:1.5;
+}
+.cat-guide-item .swatch{
+  width:8px;height:8px;border-radius:50%;
+  flex-shrink:0;margin-top:6px;
+}
+.cat-guide-item b{color:var(--ink);font-weight:600;display:block;margin-bottom:2px}
+
+/* ============================================================
+   9. Footer
+   ============================================================ */
+.site-footer{
+  border-top:1px solid var(--line);
+  padding:28px 0 36px;
+  margin-top:60px;
+  padding-bottom:calc(36px + env(safe-area-inset-bottom));
+}
+.footer-inner{
+  max-width:1240px;margin-inline:auto;padding-inline:28px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px;flex-wrap:wrap;
+  font-family:var(--font-mono);font-size:.7rem;
+  letter-spacing:.03em;color:var(--ink-3);
+}
+.footer-inner a{color:var(--ink-2);transition:color var(--transition)}
+.footer-inner a:hover{color:var(--accent-deep)}
+.footer-brand{
+  font-family:var(--font-display);font-size:.92rem;
+  font-style:italic;color:var(--ink-2);
+}
+
+/* ============================================================
+   10. Toast
+   ============================================================ */
+.toast{
+  position:fixed;
+  left:50%;bottom:calc(26px + env(safe-area-inset-bottom));
+  transform:translate(-50%,20px);
+  padding:12px 20px;
+  background:var(--ink);color:var(--bg);
+  border-radius:999px;
+  font-family:var(--font-mono);font-size:.75rem;
+  font-weight:600;letter-spacing:.02em;
+  opacity:0;pointer-events:none;z-index:2000;
+  transition:opacity .3s,transform .3s cubic-bezier(.2,.8,.2,1);
+  max-width:calc(100vw - 32px);text-align:center;
+  box-shadow:var(--shadow-lg);
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ============================================================
+   11. Responsive
+   ============================================================ */
+@media (max-width:900px){
+  .app-bar-inner{padding:12px 20px;gap:14px}
+  .tabs{padding:0 20px}
+  .main{padding:24px 20px 60px}
+  .footer-inner{padding-inline:20px}
+}
+@media (max-width:640px){
+  .app-bar-inner{grid-template-columns:auto 1fr auto;gap:10px;padding:10px 16px}
+  .brand{font-size:1.3rem}
+  .brand-mark{width:28px;height:28px;font-size:1rem}
+  .brand-88{display:none}
+  .search-wrap{max-width:none}
+  .search-key{display:none}
+  .tool-btn{width:36px;height:36px}
+  .tabs{padding:0 16px}
+  .tab{padding:11px 10px 10px;font-size:.7rem}
+  .main{padding:20px 16px 50px}
+  .grid{grid-template-columns:1fr;gap:10px}
+  .card{padding:18px}
+  .detail-hero{grid-template-columns:1fr}
+  .detail-name{font-size:2rem}
+  .code-wrap{padding:18px 60px 18px 18px;font-size:.82rem}
+  .guide-panel{
+    width:100vw;height:100vh;
+    max-height:100vh;
+    top:0;left:0;right:0;bottom:0;
+    transform:translate(0,100%);
+    border-radius:0;border:0;max-width:none;
+  }
+  .guide-panel.open{transform:translate(0,0)}
+  .guide-header{padding:20px}
+  .guide-body{padding:20px}
+  .footer-inner{padding-inline:16px;flex-direction:column;text-align:center}
+}
+
+@media (hover:hover){
+  .card:hover{transform:translateY(-2px)}
+}
+@media (hover:none){
+  .card{transform:none!important}
+  .card::after{display:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    transition-duration:.001ms !important;
+  }
+}
+
+@media print{
+  .app-bar,.site-footer,.guide-backdrop,.guide-panel,.toast,.back-btn{display:none!important}
+  .view-detail{display:block!important}
+  body{background:#fff;color:#000}
+}
+</style>
+</head>
+<body>
+
+<noscript>
+  <div class="noscript-page">
+    <h1>DAX<em>88</em></h1>
+    <p>This library runs entirely in your browser. It reads no data and sends nothing anywhere. Turn JavaScript on to use it.</p>
+  </div>
+</noscript>
+
+<!-- ============================================================
+     APP BAR
+     ============================================================ -->
+<div class="app-bar">
+  <div class="app-bar-inner">
+    <a href="#" class="brand" id="brandBtn" aria-label="DAX88 home">
+      <span class="brand-mark" aria-hidden="true">D</span>
+      <span class="brand-text">DAX</span>
+      <span class="brand-88">88</span>
+    </a>
+
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="search" id="search" placeholder="Search functions…" autocomplete="off" spellcheck="false" aria-label="Search DAX functions">
+      <span class="search-key" aria-hidden="true">/</span>
+    </div>
+
+    <div class="tools">
+      <button type="button" class="tool-btn" id="guideBtn" aria-label="How to use" title="How to use">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </button>
+      <div class="theme-wrap">
+        <button type="button" class="tool-btn" id="themeBtn" aria-label="Change theme" aria-haspopup="menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 1 1 10-10c0 2-1.5 3.5-3.5 3.5H15a2 2 0 0 0-1.4 3.4c.3.3.4.6.4 1a2 2 0 0 1-2 2.1z"/></svg>
+        </button>
+        <div class="theme-menu" id="themeMenu" role="menu" aria-label="Theme">
+          <button class="theme-opt" data-theme="chalk" role="menuitem">
+            <span class="theme-dot" style="background:#2563eb"></span>
+            <span class="theme-name">Chalk</span>
+            <span class="theme-check">✓</span>
+          </button>
+          <button class="theme-opt" data-theme="graphite" role="menuitem">
+            <span class="theme-dot" style="background:#f59e0b"></span>
+            <span class="theme-name">Graphite</span>
+            <span class="theme-check">✓</span>
+          </button>
+          <button class="theme-opt" data-theme="sage" role="menuitem">
+            <span class="theme-dot" style="background:#0d7a4a"></span>
+            <span class="theme-name">Sage</span>
+            <span class="theme-check">✓</span>
+          </button>
+          <button class="theme-opt" data-theme="slate" role="menuitem">
+            <span class="theme-dot" style="background:#22d3ee"></span>
+            <span class="theme-name">Slate</span>
+            <span class="theme-check">✓</span>
+          </button>
+          <button class="theme-opt" data-theme="rose" role="menuitem">
+            <span class="theme-dot" style="background:#be123c"></span>
+            <span class="theme-name">Rose</span>
+            <span class="theme-check">✓</span>
+          </button>
+          <button class="theme-opt" data-theme="plum" role="menuitem">
+            <span class="theme-dot" style="background:#c084fc"></span>
+            <span class="theme-name">Plum</span>
+            <span class="theme-check">✓</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs-bar">
+    <div class="tabs" id="tabs" role="tablist" aria-label="Categories"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<main class="main">
+
+  <!-- LIST VIEW -->
+  <section class="view-list" id="viewList">
+    <div class="list-meta">
+      <span class="list-count" id="countLabel" aria-live="polite"></span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="empty-state" id="empty">
+      <h3>Nothing <em>here.</em></h3>
+      <p>Try another word, or pick a different category.</p>
+    </div>
+  </section>
+
+  <!-- DETAIL VIEW -->
+  <section class="view-detail" id="viewDetail">
+    <div class="detail-toolbar">
+      <button type="button" class="back-btn" id="backBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>All functions</span>
+      </button>
+    </div>
+
+    <article class="detail-hero">
+      <div>
+        <div class="detail-badges">
+          <span class="detail-cat" id="detailCat"><span class="dot"></span><span></span></span>
+          <span class="ctx-badge" id="detailCtx"></span>
+        </div>
+        <h1 class="detail-name" id="detailName"></h1>
+        <p class="detail-tagline" id="detailTagline"></p>
+        <p class="detail-desc" id="detailDesc"></p>
+        <div class="ctx-note" id="ctxNote">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <span id="ctxNoteText"></span>
+        </div>
+      </div>
+    </article>
+
+    <div class="section" id="fieldsSection">
+      <h3 class="section-head">Fields</h3>
+      <div class="fields" id="detailFields"></div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-head">Formula</h3>
+      <div class="code-wrap">
+        <pre><code id="preview"></code></pre>
+        <button type="button" class="copy-btn" id="copyBtn" aria-label="Copy formula">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        </button>
+      </div>
+      <div class="code-note">Paste directly into Power BI. Replace table and column names with yours.</div>
+    </div>
+
+    <div class="section" id="infoSection">
+      <h3 class="section-head">Details</h3>
+      <div id="infoBlocks"></div>
+    </div>
+
+    <div class="section" id="relatedSection">
+      <h3 class="section-head">Related</h3>
+      <div class="chips" id="relatedChips"></div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-brand">DAX88 — a quiet DAX library</span>
+    <span>
+      &copy; 2026 &middot;
+      <a href="mailto:mohamed005cheikh@gmail.com">mohamed005cheikh@gmail.com</a>
+      &nbsp;|&nbsp; by MC88
+    </span>
+  </div>
+</footer>
+
+<!-- ============================================================
+     GUIDE
+     ============================================================ -->
+<div class="guide-backdrop" id="guideBackdrop" data-close-guide></div>
+<aside class="guide-panel" id="guidePanel" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+  <header class="guide-header">
+    <div>
+      <h2 id="guideTitle">How to use <em>DAX88</em></h2>
+      <p>Everything you need in two minutes.</p>
+    </div>
+    <button type="button" class="guide-close" data-close-guide aria-label="Close guide">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </header>
+  <div class="guide-body" id="guideBody">
+
+    <p class="guide-lead">
+      A single HTML file. Nothing to install, nothing to sign up for. Find the function, fill in your columns, copy, paste into Power BI.
+    </p>
+
+    <div class="guide-block">
+      <h4>Quick start</h4>
+      <ol class="steps">
+        <li>Use <b>search</b> or pick a <b>category</b> at the top.</li>
+        <li>Click any card to open the function detail.</li>
+        <li>Fill in your table and column names.</li>
+        <li>Watch the <b>live preview</b> update as you type.</li>
+        <li>Click the <b>copy icon</b> (or press <b>Ctrl+Shift+C</b>) and paste it.</li>
+      </ol>
+    </div>
+
+    <div class="guide-block">
+      <h4>Measure vs Column</h4>
+      <p style="font-size:.88rem;color:var(--ink-2);line-height:1.65;margin-bottom:12px;">
+        Every function carries a context badge telling you where it belongs:
+      </p>
+      <div class="guide-rows">
+        <div class="guide-row">
+          <span class="ctx-badge ctx-measure"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 6-6"/></svg>Measure</span>
+          <span>Recomputed on every query</span>
+        </div>
+        <div class="guide-row">
+          <span class="ctx-badge ctx-column"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="18" rx="1"/></svg>Column</span>
+          <span>Computed once at refresh</span>
+        </div>
+        <div class="guide-row">
+          <span class="ctx-badge ctx-both"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/></svg>Both</span>
+          <span>Works in either, behaviour differs</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-block">
+      <h4>VAR / RETURN — start here</h4>
+      <p style="font-size:.88rem;color:var(--ink-2);line-height:1.65;margin-bottom:10px;">
+        If you learn one thing from this library, make it variables. They break complex measures into readable steps and let you reuse a computed value without recalculating it.
+      </p>
+      <div class="model-table" style="font-size:.82rem">
+        VAR Name = <span>&lt;expression&gt;</span><br>
+        VAR Name2 = <span>&lt;expression&gt;</span><br>
+        RETURN <span>&lt;final expression&gt;</span>
+      </div>
+    </div>
+
+    <div class="guide-block">
+      <h4>Example data model</h4>
+      <p style="font-size:.88rem;color:var(--ink-2);line-height:1.65;margin-bottom:12px;">
+        All examples use four tables. Rename them to match your model.
+      </p>
+      <div class="model-table"><b>Sales</b> <span>— Amount, Qty, Price, Date, ProductKey, CustomerKey</span></div>
+      <div class="model-table"><b>Products</b> <span>— ProductKey, Name, Category, Price</span></div>
+      <div class="model-table"><b>Customers</b> <span>— CustomerKey, Name, Region</span></div>
+      <div class="model-table"><b>Dates</b> <span>— Date (marked as date table)</span></div>
+    </div>
+
+    <div class="guide-block">
+      <h4>Keyboard</h4>
+      <div class="guide-rows">
+        <div class="guide-row"><span>Focus search</span><span class="kbd">/</span></div>
+        <div class="guide-row"><span>Back / close</span><span class="kbd">Esc</span></div>
+        <div class="guide-row"><span>Copy formula</span><span class="kbd">Ctrl+Shift+C</span></div>
+        <div class="guide-row"><span>Change theme</span><span class="kbd">T</span></div>
+      </div>
+    </div>
+
+    <div class="guide-block">
+      <h4>Categories</h4>
+      <div class="cat-guide" id="catGuide"></div>
+    </div>
+
+  </div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+document.documentElement.classList.add('js-on');
+
+/* ============================================================
+   Safe storage — localStorage throws on file:// and private mode
+   ============================================================ */
+const Storage = {
+  get(k){ try { return localStorage.getItem(k); } catch { return null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch {} }
+};
+
+/* ============================================================
+   Categories
+   ============================================================ */
+const CATEGORIES = {
+  fundamentals: { color:'#2563eb', label:'Fundamentals', hint:'VAR, CALCULATE — where it all begins' },
+  aggregation:  { color:'#0d7a6a', label:'Aggregation',  hint:'Row-by-row and column-level math' },
+  filters:      { color:'#be185d', label:'Filter Context', hint:'Shape the filter around a calculation' },
+  time:         { color:'#0369a1', label:'Time',         hint:'Year-to-date, prior periods' },
+  relationships:{ color:'#7c3aed', label:'Relationships',hint:'Navigate between related tables' },
+  logical:      { color:'#a16207', label:'Logical',      hint:'IF, SWITCH, error handling' },
+  math:         { color:'#1e40af', label:'Math',         hint:'Numeric operations' },
+  text:         { color:'#9333ea', label:'Text',         hint:'Formatting and string work' },
+  tables:       { color:'#15803d', label:'Tables',       hint:'Build intermediate tables' },
+  information:  { color:'#4b5563', label:'Information',  hint:'Filter state and blanks' },
+  statistical:  { color:'#c2410c', label:'Statistical',  hint:'Ranking and distribution' },
+  advanced:     { color:'#a21caf', label:'Advanced',     hint:'Row context, virtual relationships' }
+};
+
+const CONTEXT = {
+  measure:{ label:'Measure', cls:'ctx-measure',
+    icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 6-6"/></svg>' },
+  column:{ label:'Column', cls:'ctx-column',
+    icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="18" rx="1"/></svg>' },
+  both:{ label:'Both', cls:'ctx-both',
+    icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/></svg>' }
+};
+
+/* ============================================================
+   Formula library
+   ============================================================ */
+const FORMULAS = [
+  /* ============ FUNDAMENTALS ============ */
+  { id:'var', cat:'fundamentals', name:'VAR / RETURN', alt:'Named intermediate values', context:'both',
+    desc:'Assign an expression to a name, then return a final result. The single most important pattern in modern DAX.',
+    template:'VAR {{v1}} = {{expr1}}\nVAR {{v2}} = {{expr2}}\nRETURN {{result}}',
+    fields:[
+      { key:'v1',     label:'Variable 1',   default:'CurrentSales' },
+      { key:'expr1',  label:'Value 1',      default:'SUM(Sales[Amount])' },
+      { key:'v2',     label:'Variable 2',   default:'PreviousSales' },
+      { key:'expr2',  label:'Value 2',      default:'CALCULATE(SUM(Sales[Amount]), SAMEPERIODLASTYEAR(Dates[Date]))' },
+      { key:'result', label:'Final result', default:'DIVIDE(CurrentSales - PreviousSales, PreviousSales)' }
+    ],
+    why:'Variables are evaluated once, then reused by name. This makes measures readable and prevents DAX from computing the same value twice.',
+    mistakes:[
+      'Referencing a variable outside its RETURN scope — VAR is block-local.',
+      'Expecting a VAR to change value after definition. It is frozen once assigned.',
+      'Naming a variable the same as a column or measure — DAX will pick the variable.'
+    ],
+    related:['calculate','divide','filter'] },
+
+  { id:'calculate', cat:'fundamentals', name:'CALCULATE', alt:'Change the filter context', context:'measure',
+    desc:'Evaluates an expression in a modified filter context. The most important function in the language.',
+    template:'CALCULATE(\n  {{expression}},\n  {{filter1}}\n)',
+    fields:[
+      { key:'expression', label:'Expression', default:'SUM(Sales[Amount])' },
+      { key:'filter1',    label:'Filter',     default:'Products[Category] = "Bikes"' }
+    ],
+    why:'CALCULATE REPLACES the filter context around an expression. Everything inside runs as if only the filters you pass are in play — unless KEEPFILTERS or REMOVEFILTERS changes that.',
+    mistakes:[
+      'Filtering a table that is not connected to the fact table.',
+      'Confusing a table filter with a boolean filter — they behave differently.',
+      'Forgetting that CALCULATE overwrites existing filters by default.'
+    ],
+    related:['filter','all','keepfilters','removefilters','allselected'] },
+
+  { id:'filter', cat:'fundamentals', name:'FILTER', alt:'Row-by-row filter', context:'both',
+    desc:'Returns a table filtered by a boolean condition evaluated row by row.',
+    template:'FILTER(\n  {{table}},\n  {{condition}}\n)',
+    fields:[
+      { key:'table',     label:'Table',     default:'Sales' },
+      { key:'condition', label:'Condition', default:'Sales[Amount] > 100' }
+    ],
+    why:'FILTER opens a row context and returns only the rows where the condition is TRUE. Often used inside CALCULATE to build dynamic filters.',
+    mistakes:[
+      'Filtering a large fact table when a simple column filter inside CALCULATE would work. FILTER is much slower.',
+      'Forgetting that FILTER returns a table, not a value.'
+    ],
+    related:['calculate','all','values'] },
+
+  /* ============ AGGREGATION ============ */
+  { id:'sum', cat:'aggregation', name:'SUM', alt:'Add a column', context:'measure',
+    desc:'Adds every number in a single column. The simplest aggregation in DAX.',
+    template:'SUM({{column}})',
+    fields:[{ key:'column', label:'Column', default:'Sales[Amount]' }],
+    why:'SUM works on one column and respects the current filter context. If a visual filters by year, SUM adds only that year.',
+    mistakes:[
+      'Passing two columns at once. DAX will refuse.',
+      'Applying SUM to a text column — text values are silently ignored.'
+    ],
+    related:['sumx','average','divide'] },
+
+  { id:'sumx', cat:'aggregation', name:'SUMX', alt:'Row-by-row sum', context:'both',
+    desc:'Iterates a table row by row, evaluates an expression, and sums the results. The workhorse for line totals.',
+    template:'SUMX(\n  {{table}},\n  {{expression}}\n)',
+    fields:[
+      { key:'table',      label:'Table to iterate', default:'Sales' },
+      { key:'expression', label:'Expression',       default:'Sales[Qty] * Sales[Price]' }
+    ],
+    why:'SUMX opens a row context over the table, evaluates the expression for each row, then sums. This is how you compute line totals that do not exist as a stored column.',
+    mistakes:[
+      'Confusing row context with filter context. SUMX creates the first, not the second.',
+      'Using SUMX when a simple SUM works. SUMX is always slower.'
+    ],
+    related:['sum','averagex','calculate'] },
+
+  { id:'average', cat:'aggregation', name:'AVERAGE', alt:'Arithmetic mean', context:'measure',
+    desc:'Returns the average of a single column, ignoring blanks.',
+    template:'AVERAGE({{column}})',
+    fields:[{ key:'column', label:'Column', default:'Sales[Amount]' }],
+    related:['averagex','sum','divide'] },
+
+  { id:'averagex', cat:'aggregation', name:'AVERAGEX', alt:'Row-by-row average', context:'both',
+    desc:'Iterates a table, evaluates an expression per row, and averages the results.',
+    template:'AVERAGEX(\n  {{table}},\n  {{expression}}\n)',
+    fields:[
+      { key:'table',      label:'Table to iterate', default:'Sales' },
+      { key:'expression', label:'Expression',       default:'Sales[Qty] * Sales[Price]' }
+    ],
+    related:['average','sumx','calculate'] },
+
+  { id:'countrows', cat:'aggregation', name:'COUNTROWS', alt:'Count rows', context:'measure',
+    desc:'Counts the rows of a table, respecting the current filter context.',
+    template:'COUNTROWS({{table}})',
+    fields:[{ key:'table', label:'Table', default:'Sales' }],
+    why:'COUNTROWS is often used inside CALCULATE to count filtered rows. It counts rows, not distinct values.',
+    related:['distinctcount','calculate'] },
+
+  { id:'countx', cat:'aggregation', name:'COUNTX', alt:'Count non-blank results', context:'both',
+    desc:'Iterates a table and counts how many rows produce a non-blank result.',
+    template:'COUNTX(\n  {{table}},\n  {{expression}}\n)',
+    fields:[
+      { key:'table',      label:'Table',      default:'Sales' },
+      { key:'expression', label:'Expression', default:'Sales[Amount]' }
+    ],
+    related:['countrows','sumx'] },
+
+  { id:'distinctcount', cat:'aggregation', name:'DISTINCTCOUNT', alt:'Count unique values', context:'measure',
+    desc:'Counts the number of distinct values in a column.',
+    template:'DISTINCTCOUNT({{column}})',
+    fields:[{ key:'column', label:'Column', default:'Sales[CustomerKey]' }],
+    why:'Perfect for "how many unique customers". BLANK() is counted as one distinct value unless filtered out.',
+    related:['countrows','values','selectedvalue'] },
+
+  { id:'minx', cat:'aggregation', name:'MINX', alt:'Row-by-row minimum', context:'both',
+    desc:'Iterates a table, evaluates an expression per row, and returns the smallest result.',
+    template:'MINX(\n  {{table}},\n  {{expression}}\n)',
+    fields:[
+      { key:'table',      label:'Table',      default:'Sales' },
+      { key:'expression', label:'Expression', default:'Sales[Qty] * Sales[Price]' }
+    ],
+    related:['maxx','sumx','averagex'] },
+
+  { id:'maxx', cat:'aggregation', name:'MAXX', alt:'Row-by-row maximum', context:'both',
+    desc:'Iterates a table, evaluates an expression per row, and returns the largest result.',
+    template:'MAXX(\n  {{table}},\n  {{expression}}\n)',
+    fields:[
+      { key:'table',      label:'Table',      default:'Sales' },
+      { key:'expression', label:'Expression', default:'Sales[Qty] * Sales[Price]' }
+    ],
+    related:['minx','sumx','averagex'] },
+
+  { id:'divide', cat:'aggregation', name:'DIVIDE', alt:'Safe division', context:'measure',
+    desc:'Divides two numbers and returns a safe result when the denominator is zero or blank.',
+    template:'DIVIDE(\n  {{numerator}},\n  {{denominator}},\n  {{alternate}}\n)',
+    fields:[
+      { key:'numerator',   label:'Numerator',   default:'SUM(Sales[Amount])' },
+      { key:'denominator', label:'Denominator', default:'COUNTROWS(Sales)' },
+      { key:'alternate',   label:'If zero',     default:'0' }
+    ],
+    why:'DIVIDE is safer than the / operator, which throws infinity on division by zero and shows badly in visuals. Always prefer DIVIDE.',
+    related:['sum','calculate'] },
+
+  /* ============ FILTER CONTEXT ============ */
+  { id:'all', cat:'filters', name:'ALL', alt:'Remove all filters', context:'measure',
+    desc:'Removes filters from a table or column, returning all rows regardless of the current context.',
+    template:'ALL({{table}})',
+    fields:[{ key:'table', label:'Table or column', default:'Products' }],
+    why:'ALL is the standard way to compute percentages of a total: divide the current context by a version where ALL has removed the filter.',
+    mistakes:[
+      'Using ALL on the fact table when you meant ALL on a dimension.',
+      'Forgetting that ALL ignores slicers as well as visual filters.'
+    ],
+    related:['allexcept','allselected','removefilters','calculate'] },
+
+  { id:'allexcept', cat:'filters', name:'ALLEXCEPT', alt:'Remove all but these', context:'measure',
+    desc:'Removes filters from a table except for the columns you list.',
+    template:'ALLEXCEPT(\n  {{table}},\n  {{column1}}\n)',
+    fields:[
+      { key:'table',   label:'Table',             default:'Products' },
+      { key:'column1', label:'Keep filtered by',  default:'Products[Category]' }
+    ],
+    related:['all','removefilters','calculate'] },
+
+  { id:'removefilters', cat:'filters', name:'REMOVEFILTERS', alt:'Clear filters', context:'measure',
+    desc:'Clears filters from a table or column. A clearer alias of ALL used inside CALCULATE.',
+    template:'CALCULATE(\n  {{expression}},\n  REMOVEFILTERS({{table}})\n)',
+    fields:[
+      { key:'expression', label:'Expression', default:'SUM(Sales[Amount])' },
+      { key:'table',      label:'Table',      default:'Products' }
+    ],
+    related:['all','allexcept','keepfilters'] },
+
+  { id:'keepfilters', cat:'filters', name:'KEEPFILTERS', alt:'Intersect filters', context:'measure',
+    desc:'Makes CALCULATE intersect the new filter with the existing filter context instead of overwriting it.',
+    template:'CALCULATE(\n  {{expression}},\n  KEEPFILTERS({{filter}})\n)',
+    fields:[
+      { key:'expression', label:'Expression', default:'SUM(Sales[Amount])' },
+      { key:'filter',     label:'Filter',     default:'Products[Category] = "Bikes"' }
+    ],
+    why:'By default CALCULATE overwrites the filter. KEEPFILTERS changes that: it intersects the existing filters with your new one, keeping both.',
+    related:['calculate','all','removefilters'] },
+
+  { id:'allselected', cat:'filters', name:'ALLSELECTED', alt:'Respect slicers, ignore visual', context:'measure',
+    desc:'Removes filters from the current visual but keeps the filters coming from slicers and the report.',
+    template:'CALCULATE(\n  {{expression}},\n  ALLSELECTED({{table}})\n)',
+    fields:[
+      { key:'expression', label:'Expression', default:'SUM(Sales[Amount])' },
+      { key:'table',      label:'Table',      default:'Products' }
+    ],
+    why:'ALLSELECTED is the correct way to compute "percentage of the visible total" — when a user filters by category, the total is only that category.',
+    mistakes:[
+      'Confusing ALLSELECTED with ALL. ALL ignores slicers too.'
+    ],
+    related:['all','calculate','removefilters'] },
+
+  { id:'values', cat:'filters', name:'VALUES', alt:'Distinct values as a table', context:'both',
+    desc:'Returns a one-column table of distinct values, respecting the current filters.',
+    template:'VALUES({{column}})',
+    fields:[{ key:'column', label:'Column', default:'Products[Category]' }],
+    related:['distinct','all','selectedvalue','hasonevalue'] },
+
+  { id:'selectedvalue', cat:'filters', name:'SELECTEDVALUE', alt:'Single value shortcut', context:'measure',
+    desc:'Returns the single value selected in a column, or a fallback if more than one is selected.',
+    template:'SELECTEDVALUE(\n  {{column}},\n  "{{fallback}}"\n)',
+    fields:[
+      { key:'column',   label:'Column',        default:'Products[Category]' },
+      { key:'fallback', label:'If not single', default:'Multiple' }
+    ],
+    why:'Shorthand for IF(HASONEVALUE(column), VALUES(column), alternate). Use it to build dynamic titles or card visuals.',
+    related:['values','hasonevalue','allselected'] },
+
+  { id:'hasonevalue', cat:'filters', name:'HASONEVALUE', alt:'Single selection test', context:'measure',
+    desc:'Returns TRUE if a column has exactly one value in the current filter context.',
+    template:'HASONEVALUE({{column}})',
+    fields:[{ key:'column', label:'Column', default:'Products[Category]' }],
+    related:['selectedvalue','values','isfiltered'] },
+
+  /* ============ TIME ============ */
+  { id:'totalytd', cat:'time', name:'TOTALYTD', alt:'Year-to-date total', context:'measure',
+    desc:'Evaluates an expression from the start of the year to the current date.',
+    template:'TOTALYTD(\n  {{expression}},\n  {{dates}}\n)',
+    fields:[
+      { key:'expression', label:'Expression',  default:'SUM(Sales[Amount])' },
+      { key:'dates',      label:'Date column', default:'Dates[Date]' }
+    ],
+    why:'Shorthand for CALCULATE(expr, DATESYTD(Dates[Date])). The Dates table must be marked as a date table in Power BI.',
+    mistakes:[
+      'Using a date column from the fact table instead of a dedicated Dates table.',
+      'Forgetting to mark the Dates table as a Date table in the model.'
+    ],
+    related:['datesytd','samperiodlastyear','calculate'] },
+
+  { id:'datesytd', cat:'time', name:'DATESYTD', alt:'Year-to-date dates', context:'measure',
+    desc:'Returns a table of dates from the start of the year to the current date.',
+    template:'CALCULATE(\n  {{expression}},\n  DATESYTD({{dates}})\n)',
+    fields:[
+      { key:'expression', label:'Expression',  default:'SUM(Sales[Amount])' },
+      { key:'dates',      label:'Date column', default:'Dates[Date]' }
+    ],
+    related:['totalytd','datesinperiod','calculate'] },
+
+  { id:'samperiodlastyear', cat:'time', name:'SAMEPERIODLASTYEAR', alt:'Same period, previous year', context:'measure',
+    desc:'Returns the dates from the same period one year earlier.',
+    template:'CALCULATE(\n  {{expression}},\n  SAMEPERIODLASTYEAR({{dates}})\n)',
+    fields:[
+      { key:'expression', label:'Expression',  default:'SUM(Sales[Amount])' },
+      { key:'dates',      label:'Date column', default:'Dates[Date]' }
+    ],
+    why:'The standard way to compute year-over-year. Shifts the current date range back by exactly one year.',
+    related:['dateadd','parallelperiod','totalytd'] },
+
+  { id:'dateadd', cat:'time', name:'DATEADD', alt:'Shift the date range', context:'measure',
+    desc:'Returns a table of dates shifted by a number of intervals (day, month, quarter, year).',
+    template:'CALCULATE(\n  {{expression}},\n  DATEADD({{dates}}, {{offset}}, {{interval}})\n)',
+    fields:[
+      { key:'expression', label:'Expression',  default:'SUM(Sales[Amount])' },
+      { key:'dates',      label:'Date column', default:'Dates[Date]' },
+      { key:'offset',     label:'Offset',      default:'-1' },
+      { key:'interval',   label:'Interval',    default:'YEAR' }
+    ],
+    why:'The most flexible time shifter. Positive offsets move forward, negative offsets move back.',
+    related:['samperiodlastyear','parallelperiod'] },
+
+  { id:'parallelperiod', cat:'time', name:'PARALLELPERIOD', alt:'Whole-period shift', context:'measure',
+    desc:'Returns the full period (month, quarter, year) N intervals before or after the current date range.',
+    template:'CALCULATE(\n  {{expression}},\n  PARALLELPERIOD({{dates}}, {{offset}}, {{interval}})\n)',
+    fields:[
+      { key:'expression', label:'Expression',  default:'SUM(Sales[Amount])' },
+      { key:'dates',      label:'Date column', default:'Dates[Date]' },
+      { key:'offset',     label:'Offset',      default:'-1' },
+      { key:'interval',   label:'Interval',    default:'YEAR' }
+    ],
+    why:'Returns the FULL previous period, not the same slice. If your visual shows March 15–31, PARALLELPERIOD returns all of March last year.',
+    mistakes:[
+      'Using PARALLELPERIOD when you wanted the same partial period. Use DATEADD for that.'
+    ],
+    related:['dateadd','samperiodlastyear'] },
+
+  { id:'datesinperiod', cat:'time', name:'DATESINPERIOD', alt:'Rolling window', context:'measure',
+    desc:'Returns a table of dates within a rolling window ending at a chosen date.',
+    template:'CALCULATE(\n  {{expression}},\n  DATESINPERIOD({{dates}}, {{end}}, {{count}}, {{interval}})\n)',
+    fields:[
+      { key:'expression', label:'Expression',  default:'SUM(Sales[Amount])' },
+      { key:'dates',      label:'Date column', default:'Dates[Date]' },
+      { key:'end',        label:'Ending date', default:'MAX(Dates[Date])' },
+      { key:'count',      label:'Count',       default:'-12' },
+      { key:'interval',   label:'Interval',    default:'MONTH' }
+    ],
+    why:'Perfect for rolling 12-month or trailing 30-day measures. The count is negative for windows going backwards.',
+    related:['totalytd','dateadd'] },
+
+  { id:'calendar', cat:'time', name:'CALENDAR', alt:'Build a date table', context:'both',
+    desc:'Creates a table of contiguous dates between a start and end date.',
+    template:'CALENDAR({{start}}, {{end}})',
+    fields:[
+      { key:'start', label:'Start date', default:'DATE(2024, 1, 1)' },
+      { key:'end',   label:'End date',   default:'DATE(2026, 12, 31)' }
+    ],
+    why:'The foundation of a proper date table. Always mark the result as a date table and relate it to your fact table.',
+    related:['calculate','totalytd'] },
+
+  /* ============ RELATIONSHIPS ============ */
+  { id:'related', cat:'relationships', name:'RELATED', alt:'Look up across a relationship', context:'column',
+    desc:'Fetches a single value from a related table on the one side of a relationship.',
+    template:'RELATED({{column}})',
+    fields:[{ key:'column', label:'Column in related table', default:'Products[Category]' }],
+    why:'RELATED works in calculated columns. It follows the relationship from the many side to the one side — like VLOOKUP, but based on the model.',
+    mistakes:[
+      'Using RELATED on the one side of a relationship. It only works from many to one.',
+      'Trying to use RELATED inside a measure without row context.'
+    ],
+    related:['relatedtable','lookupvalue','calculate'] },
+
+  { id:'relatedtable', cat:'relationships', name:'RELATEDTABLE', alt:'Look up a set of rows', context:'column',
+    desc:'Returns the set of rows in a related table on the many side of a relationship.',
+    template:'COUNTROWS(RELATEDTABLE({{table}}))',
+    fields:[{ key:'table', label:'Related table', default:'Sales' }],
+    why:'Use RELATEDTABLE together with an aggregator like COUNTROWS or SUMX to bring values from the many side back to the one side.',
+    related:['related','calculate','sumx'] },
+
+  { id:'userelationship', cat:'relationships', name:'USERELATIONSHIP', alt:'Activate an inactive relationship', context:'measure',
+    desc:'Tells CALCULATE to use a specified relationship instead of the default one.',
+    template:'CALCULATE(\n  {{expression}},\n  USERELATIONSHIP({{factCol}}, {{dimCol}})\n)',
+    fields:[
+      { key:'expression', label:'Expression',        default:'SUM(Sales[Amount])' },
+      { key:'factCol',    label:'Fact table column', default:'Sales[ShipDate]' },
+      { key:'dimCol',     label:'Dimension column',  default:'Dates[Date]' }
+    ],
+    why:'Models often have several date columns (OrderDate, ShipDate, DueDate). Only one is active. USERELATIONSHIP temporarily activates another.',
+    related:['calculate','crossfilter'] },
+
+  { id:'crossfilter', cat:'relationships', name:'CROSSFILTER', alt:'Change filter direction', context:'measure',
+    desc:'Changes the filter direction of a relationship for the duration of the calculation.',
+    template:'CALCULATE(\n  {{expression}},\n  CROSSFILTER({{col1}}, {{col2}}, {{direction}})\n)',
+    fields:[
+      { key:'expression', label:'Expression',         default:'SUM(Sales[Amount])' },
+      { key:'col1',       label:'Column on one side', default:'Products[ProductKey]' },
+      { key:'col2',       label:'Column on other',    default:'Sales[ProductKey]' },
+      { key:'direction',  label:'Direction',          default:'BOTH' }
+    ],
+    why:'Use CROSSFILTER when you need bidirectional filtering for one calculation without changing the model-wide relationship.',
+    related:['userelationship','calculate'] },
+
+  { id:'lookupvalue', cat:'relationships', name:'LOOKUPVALUE', alt:'Lookup without a relationship', context:'both',
+    desc:'Searches a table for a match and returns a value from the same row.',
+    template:'LOOKUPVALUE(\n  {{result}},\n  {{searchCol}},\n  {{searchValue}}\n)',
+    fields:[
+      { key:'result',      label:'Result column', default:'Products[Category]' },
+      { key:'searchCol',   label:'Search column', default:'Products[Name]' },
+      { key:'searchValue', label:'Search value',  default:'Sales[ProductName]' }
+    ],
+    why:'Works when no relationship exists between the two tables. Slower than RELATED, and returns BLANK if there are multiple matches.',
+    mistakes:[
+      'Forgetting that LOOKUPVALUE returns BLANK when there is no match or more than one match.'
+    ],
+    related:['related','calculate'] },
+
+  /* ============ LOGICAL ============ */
+  { id:'if', cat:'logical', name:'IF', alt:'Conditional branch', context:'both',
+    desc:'Returns one value if a condition is TRUE, and another if FALSE.',
+    template:'IF(\n  {{condition}},\n  {{true}},\n  {{false}}\n)',
+    fields:[
+      { key:'condition', label:'Condition', default:'SUM(Sales[Amount]) > 1000' },
+      { key:'true',      label:'If true',   default:'"High"' },
+      { key:'false',     label:'If false',  default:'"Low"' }
+    ],
+    related:['switch','coalesce','and','or'] },
+
+  { id:'switch', cat:'logical', name:'SWITCH', alt:'Match a value', context:'both',
+    desc:'Evaluates an expression against a list of values and returns the result of the first match.',
+    template:'SWITCH(\n  {{expression}},\n  {{value1}}, {{result1}},\n  {{value2}}, {{result2}},\n  {{default}}\n)',
+    fields:[
+      { key:'expression', label:'Expression', default:'SELECTEDVALUE(Products[Category])' },
+      { key:'value1',     label:'Value 1',    default:'"Bikes"' },
+      { key:'result1',    label:'Result 1',   default:'"Two-wheeled"' },
+      { key:'value2',     label:'Value 2',    default:'"Accessories"' },
+      { key:'result2',    label:'Result 2',   default:'"Add-ons"' },
+      { key:'default',    label:'Default',    default:'"Other"' }
+    ],
+    why:'Cleaner than deeply nested IF statements. Also supports a TRUE => pattern for range-based conditions.',
+    related:['if','coalesce'] },
+
+  { id:'coalesce', cat:'logical', name:'COALESCE', alt:'First non-blank', context:'both',
+    desc:'Returns the first non-blank value from a list of expressions.',
+    template:'COALESCE({{expression1}}, {{expression2}})',
+    fields:[
+      { key:'expression1', label:'First option', default:'Sales[Amount]' },
+      { key:'expression2', label:'Fallback',     default:'0' }
+    ],
+    related:['if','switch'] },
+
+  { id:'and', cat:'logical', name:'AND', alt:'All true', context:'both',
+    desc:'Returns TRUE only if both conditions are TRUE.',
+    template:'AND({{condition1}}, {{condition2}})',
+    fields:[
+      { key:'condition1', label:'Condition 1', default:'Sales[Amount] > 100' },
+      { key:'condition2', label:'Condition 2', default:'Sales[Qty] > 0' }
+    ],
+    related:['or','if'] },
+
+  { id:'or', cat:'logical', name:'OR', alt:'At least one true', context:'both',
+    desc:'Returns TRUE if at least one condition is TRUE.',
+    template:'OR({{condition1}}, {{condition2}})',
+    fields:[
+      { key:'condition1', label:'Condition 1', default:'Products[Category] = "Bikes"' },
+      { key:'condition2', label:'Condition 2', default:'Products[Category] = "Accessories"' }
+    ],
+    related:['and','if'] },
+
+  { id:'iferror', cat:'logical', name:'IFERROR', alt:'Catch errors', context:'both',
+    desc:'Returns a fallback value if the expression throws an error.',
+    template:'IFERROR({{expression}}, {{fallback}})',
+    fields:[
+      { key:'expression', label:'Expression', default:'Sales[Amount] / Sales[Qty]' },
+      { key:'fallback',   label:'Fallback',   default:'BLANK()' }
+    ],
+    related:['divide','if'] },
+
+  /* ============ MATH ============ */
+  { id:'round', cat:'math', name:'ROUND', alt:'Round to N digits', context:'both',
+    desc:'Rounds a number to a specified number of decimal places.',
+    template:'ROUND({{number}}, {{digits}})',
+    fields:[
+      { key:'number', label:'Number', default:'Sales[Amount]' },
+      { key:'digits', label:'Digits', default:'2' }
+    ],
+    related:['int','abs'] },
+
+  { id:'int', cat:'math', name:'INT', alt:'Round down', context:'both',
+    desc:'Rounds a number down to the nearest integer.',
+    template:'INT({{number}})',
+    fields:[{ key:'number', label:'Number', default:'Sales[Amount]' }],
+    related:['round','abs'] },
+
+  { id:'abs', cat:'math', name:'ABS', alt:'Absolute value', context:'both',
+    desc:'Returns the absolute (positive) value of a number.',
+    template:'ABS({{number}})',
+    fields:[{ key:'number', label:'Number', default:'Sales[Amount]' }],
+    related:['round','int'] },
+
+  { id:'mod', cat:'math', name:'MOD', alt:'Remainder', context:'both',
+    desc:'Returns the remainder after dividing a number by a divisor.',
+    template:'MOD({{number}}, {{divisor}})',
+    fields:[
+      { key:'number',  label:'Number',  default:'Sales[Amount]' },
+      { key:'divisor', label:'Divisor', default:'2' }
+    ],
+    related:['int','round'] },
+
+  { id:'power', cat:'math', name:'POWER', alt:'Exponent', context:'both',
+    desc:'Raises a number to a power.',
+    template:'POWER({{number}}, {{exponent}})',
+    fields:[
+      { key:'number',   label:'Number',   default:'Sales[Qty]' },
+      { key:'exponent', label:'Exponent', default:'2' }
+    ],
+    related:['abs','round'] },
+
+  /* ============ TEXT ============ */
+  { id:'format', cat:'text', name:'FORMAT', alt:'Format as text', context:'both',
+    desc:'Converts a value into text using a specified format string.',
+    template:'FORMAT({{value}}, "{{format}}")',
+    fields:[
+      { key:'value',  label:'Value',  default:'SUM(Sales[Amount])' },
+      { key:'format', label:'Format', default:'#,##0.00' }
+    ],
+    why:'Often used inside dynamic titles, e.g. "Total: " & FORMAT([Total Sales], "#,##0").',
+    mistakes:[
+      'FORMAT returns TEXT. You cannot sum or sort the result as a number.'
+    ],
+    related:['concatenatex'] },
+
+  { id:'concatenatex', cat:'text', name:'CONCATENATEX', alt:'Join values row by row', context:'measure',
+    desc:'Iterates a table and joins the evaluated values into a single text string.',
+    template:'CONCATENATEX(\n  {{table}},\n  {{expression}},\n  "{{delimiter}}"\n)',
+    fields:[
+      { key:'table',      label:'Table',      default:'VALUES(Products[Category])' },
+      { key:'expression', label:'Expression', default:'Products[Category]' },
+      { key:'delimiter',  label:'Delimiter',  default:', ' }
+    ],
+    why:'The DAX equivalent of TEXTJOIN. Perfect for building "Categories in stock: Bikes, Accessories" style labels.',
+    related:['format','values'] },
+
+  { id:'left', cat:'text', name:'LEFT', alt:'First characters', context:'both',
+    desc:'Returns the first N characters of a text string.',
+    template:'LEFT({{text}}, {{count}})',
+    fields:[
+      { key:'text',  label:'Text',       default:'Products[Name]' },
+      { key:'count', label:'Characters', default:'3' }
+    ],
+    related:['len','search'] },
+
+  { id:'len', cat:'text', name:'LEN', alt:'Length of text', context:'both',
+    desc:'Returns the number of characters in a text string.',
+    template:'LEN({{text}})',
+    fields:[{ key:'text', label:'Text', default:'Products[Name]' }],
+    related:['left','search'] },
+
+  { id:'search', cat:'text', name:'SEARCH', alt:'Find a substring', context:'both',
+    desc:'Returns the position of a substring inside a text, case-insensitive and wildcard-friendly.',
+    template:'SEARCH("{{find}}", {{within}}, {{start}})',
+    fields:[
+      { key:'find',   label:'Find',     default:'Bike' },
+      { key:'within', label:'Within',   default:'Products[Name]' },
+      { key:'start',  label:'Start at', default:'1' }
+    ],
+    related:['left','len'] },
+
+  /* ============ TABLES ============ */
+  { id:'summarize', cat:'tables', name:'SUMMARIZE', alt:'Group a table', context:'both',
+    desc:'Groups a table by one or more columns and returns one row per group.',
+    template:'SUMMARIZE(\n  {{table}},\n  {{groupBy}}\n)',
+    fields:[
+      { key:'table',   label:'Table',           default:'Sales' },
+      { key:'groupBy', label:'Group by column', default:'Products[Category]' }
+    ],
+    why:'Often used to materialize a small dimension table inside a measure or a calculated table.',
+    related:['summarizecolumns','addcolumns','selectcolumns','distinct'] },
+
+  { id:'summarizecolumns', cat:'tables', name:'SUMMARIZECOLUMNS', alt:'Group with computed columns', context:'both',
+    desc:'Groups a table by columns and adds computed measures per group. Power BI uses this internally for every visual.',
+    template:'SUMMARIZECOLUMNS(\n  {{groupBy}},\n  "{{name}}", {{expression}}\n)',
+    fields:[
+      { key:'groupBy',    label:'Group by',    default:'Products[Category]' },
+      { key:'name',       label:'New column',  default:'Total Sales' },
+      { key:'expression', label:'Expression',  default:'SUM(Sales[Amount])' }
+    ],
+    why:'Faster and more capable than SUMMARIZE with ADDCOLUMNS. It is what Power BI uses under the hood. Use it for calculated tables or in DAX Studio to test measures.',
+    mistakes:[
+      'Not wrapping measure references inside CALCULATE — SUMMARIZECOLUMNS needs measures or CALCULATE-wrapped aggregations.',
+      'Expecting it to work in older versions of Excel Power Pivot — it is a modern DAX function.'
+    ],
+    related:['summarize','addcolumns','calculate'] },
+
+  { id:'addcolumns', cat:'tables', name:'ADDCOLUMNS', alt:'Add computed columns', context:'both',
+    desc:'Returns a table with new columns appended, evaluated row by row.',
+    template:'ADDCOLUMNS(\n  {{table}},\n  "{{name}}",\n  {{expression}}\n)',
+    fields:[
+      { key:'table',      label:'Table',      default:'SUMMARIZE(Sales, Products[Category])' },
+      { key:'name',       label:'New column', default:'Total' },
+      { key:'expression', label:'Expression', default:'CALCULATE(SUM(Sales[Amount]))' }
+    ],
+    why:'ADDCOLUMNS creates a row context on the input table. Inside a measure you often need CALCULATE to switch to filter context.',
+    related:['summarize','selectcolumns','calculate'] },
+
+  { id:'selectcolumns', cat:'tables', name:'SELECTCOLUMNS', alt:'Pick and rename columns', context:'both',
+    desc:'Returns a table with only the chosen columns, optionally renamed.',
+    template:'SELECTCOLUMNS(\n  {{table}},\n  "{{name1}}", {{col1}}\n)',
+    fields:[
+      { key:'table', label:'Table',    default:'Products' },
+      { key:'name1', label:'New name', default:'Label' },
+      { key:'col1',  label:'Column',   default:'Products[Name]' }
+    ],
+    related:['addcolumns','summarize','distinct'] },
+
+  { id:'distinct', cat:'tables', name:'DISTINCT', alt:'Unique rows', context:'both',
+    desc:'Returns a one-column table of distinct values from a column.',
+    template:'DISTINCT({{column}})',
+    fields:[{ key:'column', label:'Column', default:'Sales[CustomerKey]' }],
+    related:['values','summarize'] },
+
+  { id:'topn', cat:'tables', name:'TOPN', alt:'Top N rows', context:'both',
+    desc:'Returns the top N rows of a table, ranked by an expression.',
+    template:'TOPN(\n  {{n}},\n  {{table}},\n  {{expression}},\n  {{order}}\n)',
+    fields:[
+      { key:'n',          label:'N',                    default:'10' },
+      { key:'table',      label:'Table',                default:'Products' },
+      { key:'expression', label:'Rank by',              default:'[Total Sales]' },
+      { key:'order',      label:'Order (0 desc, 1 asc)', default:'0' }
+    ],
+    why:'TOPN returns the whole row, not just the value. This lets you show the top 10 products with their names, categories, and totals in one visual.',
+    mistakes:[
+      'Using TOPN as a filter inside CALCULATE without wrapping it in a table function like VALUES or ALL.',
+      'Expecting ties to be broken alphabetically — DAX returns ties in unspecified order.'
+    ],
+    related:['rankx','calculate','filter'] },
+
+  /* ============ INFORMATION ============ */
+  { id:'isblank', cat:'information', name:'ISBLANK', alt:'Detect blank', context:'both',
+    desc:'Returns TRUE if a value is blank.',
+    template:'ISBLANK({{value}})',
+    fields:[{ key:'value', label:'Value', default:'Sales[Amount]' }],
+    related:['hasonevalue','isfiltered'] },
+
+  { id:'isfiltered', cat:'information', name:'ISFILTERED', alt:'Is a column filtered?', context:'measure',
+    desc:'Returns TRUE if the given column has an active direct filter.',
+    template:'ISFILTERED({{column}})',
+    fields:[{ key:'column', label:'Column', default:'Products[Category]' }],
+    why:'Detects DIRECT filters (slicers, visual axes). Use ISCROSSFILTERED to detect filters that reach the column via a relationship.',
+    related:['iscrossfiltered','hasonevalue'] },
+
+  { id:'iscrossfiltered', cat:'information', name:'ISCROSSFILTERED', alt:'Cross-filtered?', context:'measure',
+    desc:'Returns TRUE if the column is filtered, directly or through a relationship.',
+    template:'ISCROSSFILTERED({{column}})',
+    fields:[{ key:'column', label:'Column', default:'Products[Category]' }],
+    related:['isfiltered','hasonevalue'] },
+
+  { id:'contains', cat:'information', name:'CONTAINS', alt:'Row exists?', context:'both',
+    desc:'Returns TRUE if a table contains a row matching the given column-value pairs.',
+    template:'CONTAINS(\n  {{table}},\n  {{column}}, {{value}}\n)',
+    fields:[
+      { key:'table',  label:'Table',  default:'Products' },
+      { key:'column', label:'Column', default:'Products[Category]' },
+      { key:'value',  label:'Value',  default:'"Bikes"' }
+    ],
+    related:['containsrow','lookupvalue','calculate'] },
+
+  { id:'containsrow', cat:'information', name:'CONTAINSROW', alt:'Row (tuple) exists?', context:'both',
+    desc:'Returns TRUE if a table contains a row matching a tuple of values.',
+    template:'CONTAINSROW(\n  {{table}},\n  {{value}}\n)',
+    fields:[
+      { key:'table', label:'Table',      default:'Products' },
+      { key:'value', label:'Value tuple', default:'("Bikes")' }
+    ],
+    why:'Similar to CONTAINS but takes values positionally rather than by column name. Faster when the column order is already known.',
+    related:['contains','lookupvalue'] },
+
+  /* ============ STATISTICAL ============ */
+  { id:'rankx', cat:'statistical', name:'RANKX', alt:'Rank by expression', context:'measure',
+    desc:'Ranks a value against all other values in a table, based on an expression.',
+    template:'RANKX(\n  {{table}},\n  {{expression}},\n  {{value}},\n  {{order}}\n)',
+    fields:[
+      { key:'table',      label:'Rank over',             default:'ALL(Products[Name])' },
+      { key:'expression', label:'Rank by',               default:'[Total Sales]' },
+      { key:'value',      label:'Value to rank',         default:'[Total Sales]' },
+      { key:'order',      label:'Order (0 desc, 1 asc)', default:'0' }
+    ],
+    why:'RANKX is powerful but easy to get wrong. Without ALL() around the table, the rank is computed only over the visible rows.',
+    mistakes:[
+      'Forgetting to wrap the table in ALL() — the rank then reflects only the visible context.',
+      'Passing a measure where a column is needed in the first argument.',
+      'Omitting the value argument causes RANKX to re-evaluate the expression for each row — slower but often clearer.'
+    ],
+    related:['topn','calculate','all','sumx'] },
+
+  { id:'median', cat:'statistical', name:'MEDIAN', alt:'Middle value', context:'measure',
+    desc:'Returns the median value of a column.',
+    template:'MEDIAN({{column}})',
+    fields:[{ key:'column', label:'Column', default:'Sales[Amount]' }],
+    related:['average','percentile'] },
+
+  { id:'percentile', cat:'statistical', name:'PERCENTILE.INC', alt:'K-th percentile', context:'measure',
+    desc:'Returns the k-th percentile of a column, using inclusive interpolation.',
+    template:'PERCENTILE.INC({{column}}, {{k}})',
+    fields:[
+      { key:'column', label:'Column',           default:'Sales[Amount]' },
+      { key:'k',      label:'Percentile (0–1)', default:'0.9' }
+    ],
+    related:['median','average'] },
+
+  /* ============ ADVANCED ============ */
+  { id:'earlier', cat:'advanced', name:'EARLIER', alt:'Outer row context', context:'column',
+    desc:'References the row context one level up from the current one. Essential for self-referencing calculations.',
+    template:'SUMX(\n  FILTER({{table}}, {{column}} = EARLIER({{column}})),\n  {{expression}}\n)',
+    fields:[
+      { key:'table',      label:'Table',      default:'Sales' },
+      { key:'column',     label:'Column',     default:'Sales[CustomerKey]' },
+      { key:'expression', label:'Expression', default:'Sales[Amount]' }
+    ],
+    why:'EARLIER lets you compare each row to the rows before it. Used for running totals, rankings, and finding the previous value in a series.',
+    mistakes:[
+      'Calling EARLIER outside a nested row context — it will error.',
+      'Forgetting that EARLIER(column, 1) refers to the innermost context, EARLIER(column, 2) to the one above.'
+    ],
+    related:['filter','sumx','rankx'] },
+
+  { id:'treatas', cat:'advanced', name:'TREATAS', alt:'Virtual relationship', context:'measure',
+    desc:'Applies the values of a table as a filter to columns in an unrelated table.',
+    template:'CALCULATE(\n  {{expression}},\n  TREATAS({{table}}, {{column}})\n)',
+    fields:[
+      { key:'expression', label:'Expression',      default:'SUM(Sales[Amount])' },
+      { key:'table',      label:'Values to apply', default:'Products[Category]' },
+      { key:'column',     label:'Target column',   default:'Sales[ProductCategory]' }
+    ],
+    why:'TREATAS builds a virtual relationship on the fly. Perfect when two tables should be related for one calculation but cannot be related in the model.',
+    mistakes:[
+      'Mismatched column types — TREATAS requires identical data types on both sides.',
+      'Forgetting that TREATAS replaces the existing filter on the target column.'
+    ],
+    related:['calculate','userelationship','filter'] },
+
+  { id:'firstnonblank', cat:'advanced', name:'FIRSTNONBLANK', alt:'First non-blank', context:'measure',
+    desc:'Returns the first non-blank value of an expression, evaluated over a sorted column.',
+    template:'FIRSTNONBLANK({{column}}, {{expression}})',
+    fields:[
+      { key:'column',     label:'Sort by column', default:'Dates[Date]' },
+      { key:'expression', label:'Return',         default:'Sales[Amount]' }
+    ],
+    why:'Useful for finding the first sale, the earliest price, or the initial value of a stock. The first argument determines the order.',
+    related:['lastnonblank','values'] },
+
+  { id:'lastnonblank', cat:'advanced', name:'LASTNONBLANK', alt:'Last non-blank', context:'measure',
+    desc:'Returns the last non-blank value of an expression, evaluated over a sorted column.',
+    template:'LASTNONBLANK({{column}}, {{expression}})',
+    fields:[
+      { key:'column',     label:'Sort by column', default:'Dates[Date]' },
+      { key:'expression', label:'Return',         default:'Sales[Amount]' }
+    ],
+    why:'Commonly used for inventory or stock measures — the last recorded value rather than a sum. Often combined with CALCULATE to carry forward the last known price.',
+    related:['firstnonblank','values','calculate'] },
+
+  { id:'selectedmeasure', cat:'advanced', name:'SELECTEDMEASURE', alt:'Dynamic measure', context:'measure',
+    desc:'Returns the measure currently being evaluated. Used inside calculation groups to build generic logic.',
+    template:'{{expression}}\n-- SELECTEDMEASURE() returns the measure in context',
+    fields:[
+      { key:'expression', label:'Example', default:'SELECTEDMEASURE()' }
+    ],
+    why:'Only meaningful inside a Calculation Group. It lets you write one rule that applies to every measure the user drops on the visual.',
+    mistakes:[
+      'Using SELECTEDMEASURE outside a calculation group — it will throw an error.',
+      'Forgetting that calculation groups require a compatible version of Power BI / SSAS.'
+    ],
+    related:['calculate','if'] }
+];
+
+/* ============================================================
+   State
+   ============================================================ */
+const state = {
+  category: 'all',
+  search: '',
+  activeId: null
+};
+
+/* ============================================================
+   DOM
+   ============================================================ */
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+const tabs         = $('#tabs');
+const grid         = $('#grid');
+const empty        = $('#empty');
+const countLabel   = $('#countLabel');
+const viewList     = $('#viewList');
+const viewDetail   = $('#viewDetail');
+const backBtn      = $('#backBtn');
+const detailCat    = $('#detailCat');
+const detailCtx    = $('#detailCtx');
+const detailName   = $('#detailName');
+const detailTagline= $('#detailTagline');
+const detailDesc   = $('#detailDesc');
+const ctxNote      = $('#ctxNote');
+const ctxNoteText  = $('#ctxNoteText');
+const detailFields = $('#detailFields');
+const fieldsSection= $('#fieldsSection');
+const preview      = $('#preview');
+const copyBtn      = $('#copyBtn');
+const infoBlocks   = $('#infoBlocks');
+const infoSection  = $('#infoSection');
+const relatedSec   = $('#relatedSection');
+const relatedChips = $('#relatedChips');
+const search       = $('#search');
+const toast        = $('#toast');
+const themeBtn     = $('#themeBtn');
+const themeMenu    = $('#themeMenu');
+const themeColor   = $('#themeColor');
+const guideBtn     = $('#guideBtn');
+const guidePanel   = $('#guidePanel');
+const guideBackdrop= $('#guideBackdrop');
+const catGuide     = $('#catGuide');
+const brandBtn     = $('#brandBtn');
+
+/* ============================================================
+   Escape helpers
+   ============================================================ */
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+  ));
+}
+function escapeAttr(s){
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/* ============================================================
+   DAX tokenizer (single-pass, safe)
+   ============================================================ */
+const DAX_KEYWORDS = new Set([
+  'VAR','RETURN','CALCULATE','FILTER','ALL','ALLEXCEPT','REMOVEFILTERS',
+  'KEEPFILTERS','ALLSELECTED','TOTALYTD','DATESYTD','SAMEPERIODLASTYEAR',
+  'DATEADD','PARALLELPERIOD','DATESINPERIOD','SELECTEDVALUE','HASONEVALUE',
+  'VALUES','TRUE','FALSE','BLANK','SUMX','AVERAGEX','RANKX','SUMMARIZECOLUMNS',
+  'SUMMARIZE','ADDCOLUMNS','SELECTCOLUMNS','DISTINCT','TOPN','TREATAS',
+  'USERELATIONSHIP','CROSSFILTER','LOOKUPVALUE','EARLIER','EARLIEST',
+  'FIRSTNONBLANK','LASTNONBLANK','SELECTEDMEASURE','CONTAINS','CONTAINSROW',
+  'RELATED','RELATEDTABLE','DIVIDE','COALESCE','SWITCH','IF','IFERROR',
+  'AND','OR','NOT','FORMAT','CONCATENATEX'
+]);
+
+function highlightDAX(str){
+  const out = [];
+  let i = 0;
+  const len = str.length;
+
+  while (i < len){
+    const c = str[i];
+
+    // String literal
+    if (c === '"'){
+      let j = i + 1;
+      while (j < len && str[j] !== '"') j++;
+      out.push({ t:'str', v: str.slice(i, Math.min(j + 1, len)) });
+      i = j + 1;
+      continue;
+    }
+
+    // Number — only when at a boundary
+    const prev = i > 0 ? str[i - 1] : '';
+    if (/\d/.test(c) && !/[\w"]/.test(prev)){
+      let j = i;
+      while (j < len && /[\d.]/.test(str[j])) j++;
+      out.push({ t:'num', v: str.slice(i, j) });
+      i = j;
+      continue;
+    }
+
+    // Identifier
+    if (/[A-Za-z_]/.test(c)){
+      let j = i;
+      while (j < len && /[\w.]/.test(str[j])) j++;
+      const word = str.slice(i, j);
+      const upper = word.toUpperCase();
+      if (DAX_KEYWORDS.has(upper)){
+        out.push({ t:'kw', v: word });
+      } else {
+        out.push({ t:'txt', v: word });
+      }
+      i = j;
+      continue;
+    }
+
+    // Anything else — punctuation, whitespace, newlines
+    out.push({ t:'txt', v: c });
+    i++;
+  }
+
+  return out.map(tok => {
+    const v = escapeHtml(tok.v);
+    if (tok.t === 'kw') return '<span class="kw">' + v + '</span>';
+    if (tok.t === 'str') return '<span class="str">' + v + '</span>';
+    if (tok.t === 'num') return '<span class="num">' + v + '</span>';
+    return v;
+  }).join('');
+}
+
+/* ============================================================
+   Render tabs
+   ============================================================ */
+function renderTabs(){
+  const items = [
+    { key:'all', label:'All' },
+    ...Object.entries(CATEGORIES).map(([k, v]) => ({ key:k, label:v.label }))
+  ];
+
+  tabs.innerHTML = items.map(item => {
+    const count = item.key === 'all'
+      ? FORMULAS.length
+      : FORMULAS.filter(f => f.cat === item.key).length;
+    const active = state.category === item.key;
+    return `<button type="button"
+              class="tab${active ? ' active' : ''}"
+              data-cat="${item.key}"
+              role="tab"
+              aria-selected="${active}"
+              id="tab-${item.key}">
+      ${item.label}<span class="tab-count" aria-hidden="true">${count}</span>
+    </button>`;
+  }).join('');
+
+  tabs.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.category = btn.dataset.cat;
+      renderTabs();
+      renderGrid();
+    });
+  });
+}
+
+/* ============================================================
+   Render grid
+   ============================================================ */
+function getFiltered(){
+  const q = state.search.trim().toLowerCase();
+  return FORMULAS.filter(f => {
+    if (state.category !== 'all' && f.cat !== state.category) return false;
+    if (!q) return true;
+    const hay = [
+      f.name, f.alt, f.desc, f.why || '',
+      (f.mistakes || []).join(' '), f.id
+    ].join(' ').toLowerCase();
+    return hay.includes(q);
+  });
+}
+
+function renderGrid(){
+  const list = getFiltered();
+
+  if (!list.length){
+    grid.innerHTML = '';
+    empty.classList.add('show');
+  } else {
+    empty.classList.remove('show');
+    grid.innerHTML = list.map(f => {
+      const cat = CATEGORIES[f.cat];
+      const ctx = CONTEXT[f.context] || CONTEXT.both;
+      return `<button type="button" class="card" data-id="${f.id}">
+        <div class="card-top">
+          <span class="card-name">${escapeHtml(f.name)}</span>
+          <span class="ctx-badge ${ctx.cls}">${ctx.icon}${ctx.label}</span>
+        </div>
+        <div class="card-meta">
+          <span class="card-dot" style="background:${cat.color}"></span>
+          <span class="card-cat">${cat.label}</span>
+        </div>
+        <div class="card-desc">${escapeHtml(f.desc)}</div>
+      </button>`;
+    }).join('');
+
+    grid.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        const f = FORMULAS.find(x => x.id === card.dataset.id);
+        if (f) openDetail(f, { push: true });
+      });
+    });
+  }
+
+  const n = list.length;
+  countLabel.innerHTML = `<b>${n}</b> function${n === 1 ? '' : 's'}`;
+}
+
+/* ============================================================
+   Render category guide
+   ============================================================ */
+function renderCategoryGuide(){
+  catGuide.innerHTML = Object.entries(CATEGORIES).map(([k, v]) => `
+    <div class="cat-guide-item">
+      <span class="swatch" style="background:${v.color}" aria-hidden="true"></span>
+      <div><b>${v.label}</b>${v.hint}</div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   Search
+   ============================================================ */
+search.addEventListener('input', () => {
+  state.search = search.value;
+  renderGrid();
+});
+
+/* ============================================================
+   Detail view — open / close / route
+   ============================================================ */
+let lastFocused = null;
+
+function openDetail(formula, { push = false } = {}){
+  // Avoid re-rendering if the same function is already open
+  if (state.activeId === formula.id && viewDetail.classList.contains('active')){
+    if (push) history.replaceState(null, '', '#' + formula.id);
+    return;
+  }
+
+  if (!viewDetail.classList.contains('active')){
+    lastFocused = document.activeElement;
+  }
+
+  state.activeId = formula.id;
+
+  const cat = CATEGORIES[formula.cat];
+  const ctx = CONTEXT[formula.context] || CONTEXT.both;
+
+  // Header
+  detailCat.querySelector('.dot').style.background = cat.color;
+  detailCat.querySelector('span:last-child').textContent = cat.label;
+
+  detailCtx.className = 'ctx-badge ' + ctx.cls;
+  detailCtx.innerHTML = ctx.icon + ctx.label;
+
+  detailName.textContent = formula.name;
+  detailTagline.textContent = formula.alt;
+  detailDesc.textContent = formula.desc;
+
+  // Context note
+  if (formula.context === 'both'){
+    ctxNote.classList.add('show');
+    ctxNoteText.innerHTML = '<b>Works in both contexts.</b> In a Measure, it responds to the current filters. In a Calculated Column, it runs once per row at refresh time.';
+  } else {
+    ctxNote.classList.remove('show');
+  }
+
+  // Fields
+  detailFields.innerHTML = '';
+  if (!formula.fields || formula.fields.length === 0){
+    fieldsSection.style.display = 'none';
+  } else {
+    fieldsSection.style.display = '';
+    formula.fields.forEach(f => {
+      const wrap = document.createElement('div');
+      wrap.className = 'field';
+      wrap.innerHTML = `
+        <label class="field-label" for="field-${f.key}">
+          <span>${escapeHtml(f.label)}</span>
+          <span class="field-var">{{${escapeHtml(f.key)}}}</span>
+        </label>
+        <input type="text" id="field-${f.key}" data-key="${escapeAttr(f.key)}"
+               value="${escapeAttr(f.default)}" spellcheck="false" autocomplete="off">
+      `;
+      detailFields.appendChild(wrap);
+    });
+
+    detailFields.querySelectorAll('input[data-key]').forEach(inp => {
+      inp.addEventListener('input', updatePreview);
+    });
+  }
+
+  updatePreview();
+
+  // Info blocks
+  infoBlocks.innerHTML = '';
+  let hasInfo = false;
+
+  if (formula.why){
+    hasInfo = true;
+    infoBlocks.innerHTML += `
+      <details class="info-block" open>
+        <summary>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>Why it works</span>
+        </summary>
+        <div class="info-content"><p>${escapeHtml(formula.why)}</p></div>
+      </details>`;
+  }
+
+  if (formula.mistakes && formula.mistakes.length){
+    hasInfo = true;
+    infoBlocks.innerHTML += `
+      <details class="info-block">
+        <summary>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>Common mistakes</span>
+        </summary>
+        <div class="info-content">
+          <ul>${formula.mistakes.map(m => `<li>${escapeHtml(m)}</li>`).join('')}</ul>
+        </div>
+      </details>`;
+  }
+  infoSection.style.display = hasInfo ? '' : 'none';
+
+  // Related
+  if (formula.related && formula.related.length){
+    const chips = formula.related
+      .map(id => FORMULAS.find(x => x.id === id))
+      .filter(Boolean)
+      .map(t => `<button type="button" class="chip" data-rel="${t.id}">${escapeHtml(t.name)}</button>`)
+      .join('');
+    if (chips){
+      relatedSec.style.display = '';
+      relatedChips.innerHTML = chips;
+      relatedChips.querySelectorAll('[data-rel]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const t = FORMULAS.find(x => x.id === btn.dataset.rel);
+          if (t) openDetail(t, { push: true });
+        });
+      });
+    } else {
+      relatedSec.style.display = 'none';
+    }
+  } else {
+    relatedSec.style.display = 'none';
+  }
+
+  viewList.classList.add('hidden');
+  viewDetail.classList.add('active');
+  window.scrollTo({ top: 0 });
+
+  if (push){
+    history.pushState(null, '', '#' + formula.id);
+  }
+
+  setTimeout(() => {
+    const first = detailFields.querySelector('input');
+    if (first) first.focus({ preventScroll: true });
+  }, 100);
+}
+
+function closeDetail(){
+  // If there is a hash, let the browser's back button do the work
+  if (location.hash){
+    history.back();
+  } else {
+    hideDetail();
+  }
+}
+
+function hideDetail(){
+  viewDetail.classList.remove('active');
+  viewList.classList.remove('hidden');
+  state.activeId = null;
+  if (lastFocused && typeof lastFocused.focus === 'function'){
+    lastFocused.focus({ preventScroll: true });
+  }
+  window.scrollTo({ top: 0 });
+}
+
+backBtn.addEventListener('click', closeDetail);
+brandBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  if (viewDetail.classList.contains('active')) closeDetail();
+});
+
+/* Route — handles both popstate and hashchange */
+function route(){
+  const id = location.hash.replace('#', '') || null;
+  if (id === state.activeId) return;
+
+  if (id){
+    const f = FORMULAS.find(x => x.id === id);
+    if (f) openDetail(f, { push: false });
+  } else {
+    hideDetail();
+  }
+}
+
+window.addEventListener('popstate', route);
+window.addEventListener('hashchange', route);
+
+/* ============================================================
+   Live preview
+   ============================================================ */
+function updatePreview(){
+  if (!state.activeId) return;
+  const f = FORMULAS.find(x => x.id === state.activeId);
+  if (!f) return;
+
+  let out = f.template;
+  detailFields.querySelectorAll('input[data-key]').forEach(inp => {
+    out = out.split('{{' + inp.dataset.key + '}}').join(inp.value);
+  });
+
+  preview.innerHTML = highlightDAX(out);
+}
+
+/* ============================================================
+   Copy
+   ============================================================ */
+async function copyFormula(){
+  const text = preview.textContent || preview.innerText || '';
+  if (!text) return;
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('Formula copied');
+    flashCopy();
+  } catch (err){
+    // Fallback for old browsers and non-secure contexts
+    const range = document.createRange();
+    range.selectNode(preview);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    try {
+      document.execCommand('copy');
+      showToast('Formula copied');
+      flashCopy();
+    } catch (e){
+      showToast('Copy failed');
+    }
+    sel.removeAllRanges();
+  }
+}
+
+function flashCopy(){
+  copyBtn.style.background = 'var(--accent)';
+  copyBtn.style.color = 'var(--accent-ink)';
+  copyBtn.style.borderColor = 'var(--accent)';
+  setTimeout(() => {
+    copyBtn.style.background = '';
+    copyBtn.style.color = '';
+    copyBtn.style.borderColor = '';
+  }, 700);
+}
+
+copyBtn.addEventListener('click', copyFormula);
+
+/* ============================================================
+   Toast
+   ============================================================ */
+let toastTimer;
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 1700);
+}
+
+/* ============================================================
+   Keyboard
+   ============================================================ */
+function isEditable(el){
+  if (!el) return false;
+  const tag = (el.tagName || '').toLowerCase();
+  return tag === 'input' || tag === 'textarea' || tag === 'select' || el.isContentEditable;
+}
+
+document.addEventListener('keydown', (e) => {
+  const onDetail = viewDetail.classList.contains('active');
+  const guideOpen = guidePanel.classList.contains('open');
+
+  // Ctrl/Cmd+Shift+C — copy formula in detail view
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'c'){
+    if (onDetail){
+      e.preventDefault();
+      copyFormula();
+    }
+    return;
+  }
+
+  // "/" focuses search
+  if (e.key === '/' && !isEditable(e.target) && document.activeElement !== search && !onDetail && !guideOpen){
+    e.preventDefault();
+    search.focus();
+    return;
+  }
+
+  // Escape
+  if (e.key === 'Escape'){
+    if (guideOpen){ closeGuide(); return; }
+    if (onDetail){ closeDetail(); return; }
+    if (document.activeElement === search){
+      search.value = '';
+      state.search = '';
+      renderGrid();
+      search.blur();
+      return;
+    }
+  }
+
+  // "T" cycles themes (but not while typing)
+  if (!isEditable(e.target) && !e.ctrlKey && !e.metaKey && !e.altKey && e.key.toLowerCase() === 't'){
+    e.preventDefault();
+    cycleTheme();
+  }
+});
+
+/* ============================================================
+   Guide panel
+   ============================================================ */
+function openGuide(){
+  lastFocused = document.activeElement;
+  guidePanel.classList.add('open');
+  guideBackdrop.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => {
+    const btn = guidePanel.querySelector('.guide-close');
+    if (btn) btn.focus();
+  }, 100);
+}
+function closeGuide(){
+  guidePanel.classList.remove('open');
+  guideBackdrop.classList.remove('open');
+  document.body.style.overflow = '';
+  if (lastFocused && typeof lastFocused.focus === 'function'){
+    lastFocused.focus({ preventScroll: true });
+  }
+}
+
+guideBtn.addEventListener('click', openGuide);
+guideBackdrop.addEventListener('click', closeGuide);
+guidePanel.addEventListener('click', (e) => {
+  if (e.target.closest('[data-close-guide]')) closeGuide();
+});
+
+/* Focus trap in guide */
+const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Tab') return;
+  if (!guidePanel.classList.contains('open')) return;
+
+  const items = [...guidePanel.querySelectorAll(FOCUSABLE)]
+    .filter(el => el.offsetParent !== null || el === document.activeElement);
+  if (!items.length) return;
+  const first = items[0], last = items[items.length - 1];
+
+  if (e.shiftKey && document.activeElement === first){
+    e.preventDefault(); last.focus();
+  } else if (!e.shiftKey && document.activeElement === last){
+    e.preventDefault(); first.focus();
+  }
+});
+
+/* ============================================================
+   Theme
+   ============================================================ */
+const THEMES = ['chalk','graphite','sage','slate','rose','plum'];
+const THEME_LABELS = {
+  chalk:'Chalk', graphite:'Graphite', sage:'Sage',
+  slate:'Slate', rose:'Rose', plum:'Plum'
+};
+const THEME_COLORS = {
+  chalk:'#f7f8fa', graphite:'#0c0c10', sage:'#f4f8f4',
+  slate:'#0d1117', rose:'#fdf7f6', plum:'#120a18'
+};
+
+function applyTheme(name, persist = true){
+  if (!THEMES.includes(name)) name = 'chalk';
+  document.documentElement.dataset.theme = name;
+  if (themeColor) themeColor.setAttribute('content', THEME_COLORS[name]);
+  if (persist) Storage.set('dax88.theme', name);
+  updateThemeMenu(name);
+}
+
+function cycleTheme(){
+  const current = document.documentElement.dataset.theme || 'chalk';
+  const i = THEMES.indexOf(current);
+  const next = THEMES[(i + 1) % THEMES.length];
+  applyTheme(next);
+  showToast(THEME_LABELS[next]);
+}
+
+function updateThemeMenu(current){
+  themeMenu.querySelectorAll('.theme-opt').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.theme === current);
+  });
+}
+
+function toggleThemeMenu(force){
+  const isOpen = themeMenu.classList.contains('open');
+  const next = typeof force === 'boolean' ? force : !isOpen;
+  themeMenu.classList.toggle('open', next);
+  themeBtn.setAttribute('aria-expanded', String(next));
+}
+
+themeBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  toggleThemeMenu();
+});
+
+themeMenu.querySelectorAll('.theme-opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    applyTheme(opt.dataset.theme);
+    toggleThemeMenu(false);
+    showToast(THEME_LABELS[opt.dataset.theme]);
+  });
+});
+
+document.addEventListener('click', (e) => {
+  if (!themeMenu.classList.contains('open')) return;
+  if (!e.target.closest('.theme-wrap')) toggleThemeMenu(false);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && themeMenu.classList.contains('open')){
+    toggleThemeMenu(false);
+  }
+});
+
+/* Load saved theme before painting meaningful content */
+(function bootTheme(){
+  const saved = Storage.get('dax88.theme');
+  applyTheme(saved || 'chalk', false);
+})();
+
+/* ============================================================
+   Sanity check
+   ============================================================ */
+(function validate(){
+  const seen = new Set();
+  FORMULAS.forEach(f => {
+    if (seen.has(f.id)) console.warn('[DAX88] Duplicate id:', f.id);
+    seen.add(f.id);
+    if (!CATEGORIES[f.cat]) console.warn('[DAX88] Unknown category:', f.cat, '→', f.id);
+    if (!CONTEXT[f.context]) console.warn('[DAX88] Unknown context:', f.context, '→', f.id);
+    (f.related || []).forEach(rid => {
+      if (!FORMULAS.some(x => x.id === rid)){
+        console.warn('[DAX88] Unknown related id:', rid, 'in', f.id);
+      }
+    });
+  });
+})();
+
+/* ============================================================
+   Boot
+   ============================================================ */
+(function init(){
+  // Dynamic placeholder with real count
+  search.placeholder = `Search ${FORMULAS.length} functions…`;
+
+  renderTabs();
+  renderGrid();
+  renderCategoryGuide();
+
+  // Open from hash if present
+  if (location.hash){
+    const id = location.hash.replace('#', '');
+    const f = FORMULAS.find(x => x.id === id);
+    if (f){
+      // replaceState so the back button doesn't loop on the initial hash
+      history.replaceState(null, '', '#' + id);
+      openDetail(f, { push: false });
+    } else {
+      history.replaceState(null, '', location.pathname);
+    }
+  }
+})();
+
+})();
+</script>
+</body>
+</html>
